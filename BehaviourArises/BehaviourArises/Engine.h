@@ -2,7 +2,7 @@
 class DrawManager;
 class SpriteManager;
 class World;
-
+class Dungeon;
 class Engine
 {
 public:
@@ -25,7 +25,7 @@ private:
 
 	DrawManager* m_drawManager;
 	SpriteManager* m_spriteManager;
-	World* m_world;
+	Dungeon* m_world;
 
 
 };

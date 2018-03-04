@@ -6,7 +6,7 @@
 #include "DrawManager.h"
 #include "SpriteManager.h"
 #include "World.h"
-
+#include "Dungeon.h"
 
 Engine::Engine()
 {
@@ -29,7 +29,7 @@ Engine::~Engine()
 void Engine::Initialise()
 {
 	m_drawManager = new DrawManager();
-	m_world = new World();
+	m_world = new Dungeon();
 	m_drawManager->Initialise();
 	m_spriteManager = new SpriteManager(m_drawManager->GetRenderer());
 	

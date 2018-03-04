@@ -158,23 +158,6 @@ void World::Update(float p_delta)
 
 }
 
-Tile* World::GetTile(int p_gridX, int p_gridY)
-{
-	if (p_gridX<0 || p_gridX>Config::COLUMNS - 1 || p_gridY<0 || p_gridY>Config::ROWS - 1)
-	{
-		return nullptr;
-	}
-	return	m_tiles[std::make_pair(p_gridX, p_gridY)];
-}
-
-Tile* World::GetTile(Vector2<int> p_gridPos)
-{
-	if (p_gridPos.x<0 || p_gridPos.x>Config::COLUMNS - 1 || p_gridPos.y<0 || p_gridPos.y>Config::ROWS - 1)
-	{
-		return nullptr;
-	}
-	return	m_tiles[std::make_pair(p_gridPos.x, p_gridPos.y)];
-}
 
 void World::HandleEvent(SDL_Event& p_ev, SDL_Point p_pos)
 {

@@ -13,39 +13,15 @@ Tile::Tile(int p_x, int p_y, int p_w, int p_h, int p_gridX, int p_gridY)
 	m_rect = { p_x,p_y,p_w,p_h };
 	m_drawManager = ServiceLocator<DrawManager>::GetService();
 	m_spriteManager = ServiceLocator<SpriteManager>::GetService();
-	m_sprites.push_back(m_spriteManager->CreateSprite("../External/Textures/Spacedirt.png", 0, 0, 32, 32));
-	m_sprites.push_back(m_spriteManager->CreateSprite("../External/Textures/Spacegrass.png", 0, 0, 32, 32));
-	m_sprites.push_back(m_spriteManager->CreateSprite("../External/Textures/Crater.png", 0, 0, 32, 32));
-	m_sprites.push_back(m_spriteManager->CreateSprite("../External/Textures/BlockedTile.png", 0, 0, 32, 32));
+	m_sprites.push_back(m_spriteManager->CreateSprite("../External/Textures/Floor.png", 0, 0, 32, 32));
+	m_sprites.push_back(m_spriteManager->CreateSprite("../External/Textures/Wall.png", 0, 0, 32, 32));
+	m_sprites.push_back(m_spriteManager->CreateSprite("EMPTY_SPRITE", 0, 0, 32, 32));
 
 	m_gridX = p_gridX;
 	m_gridY = p_gridY;
 	m_x = p_x;
 	m_y = p_y;
-	int randomtype = rand() % 100;
 
-	if(randomtype <=50)
-	{
-		m_type = dirt;
-	}
-	else if(randomtype>50&& randomtype <=80)
-	{
-		m_type = grass;
-	}
-	else if(randomtype>80)
-	{
-		m_type = crater;
-	}
-	if(randomtype>90)
-	{
-		SetBlocked(true);
-	}
-	else
-	{
-		SetBlocked(false);
-	}
-
-	m_activeSprite = m_sprites[m_type];
 	
 }
 
@@ -104,28 +80,46 @@ Vector2<int> Tile::GetGridPos()
 
 void Tile::OnClick(std::string p_selectedSpawnType)
 {
-	if(p_selectedSpawnType=="Dirt")
+	//if(p_selectedSpawnType=="Dirt")
+	//{
+	//	m_type = dirt;
+	//	m_activeSprite = m_sprites[0];
+	//	m_blocked = false;
+
+	//}
+	//else if(p_selectedSpawnType=="Grass")
+	//{
+	//	m_type = grass;
+	//	m_activeSprite = m_sprites[1];
+	//	m_blocked = false;
+	//	
+	//}
+	//else if (p_selectedSpawnType == "Crater")
+	//{
+	//	m_type = crater;
+	//	m_activeSprite = m_sprites[2];
+	//	m_blocked = false;
+
+	//}
+	//
+}
+
+void Tile::SetType(const char p_type)
+{
+	m_type = (Type)p_type;
+
+	if(m_type==Floor)
 	{
-		m_type = dirt;
 		m_activeSprite = m_sprites[0];
-		m_blocked = false;
-
 	}
-	else if(p_selectedSpawnType=="Grass")
+	else if(m_type==Wall)
 	{
-		m_type = grass;
 		m_activeSprite = m_sprites[1];
-		m_blocked = false;
-		
 	}
-	else if (p_selectedSpawnType == "Crater")
+	else if(m_type==Unused)
 	{
-		m_type = crater;
 		m_activeSprite = m_sprites[2];
-		m_blocked = false;
-
 	}
-	
 }
 
 bool Tile::IsBlocked()

@@ -153,6 +153,7 @@
     <ClInclude Include="AStarPath.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="DrawManager.h" />
+    <ClInclude Include="Dungeon.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="FallenStar.h" />
     <ClInclude Include="FiniteStateMachine.h" />
@@ -179,6 +180,7 @@
     <ClCompile Include="AStarPath.cpp" />
     <ClCompile Include="BehaviourArises.cpp" />
     <ClCompile Include="DrawManager.cpp" />
+    <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="FallenStar.cpp" />
     <ClCompile Include="FiniteStateMachine.cpp" />

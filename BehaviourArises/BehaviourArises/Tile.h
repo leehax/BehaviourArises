@@ -9,7 +9,7 @@ class World;
 class DrawManager;
 class SpriteManager;
 
-enum Type{dirt, grass, crater};
+enum Type{Unused= ' ', Wall = '#', Floor = '.'};
 
 class Tile 
 {
@@ -22,7 +22,7 @@ public:
 	Vector2<int> GetWorldPos();
 	Vector2<int> GetGridPos();
 	void OnClick(std::string p_selectedSpawnType);
-
+	void SetType(const char p_type);
 	bool IsBlocked(); 
 	void SetBlocked(bool p_val);
 	Type m_type;

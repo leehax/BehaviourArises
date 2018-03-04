@@ -17,8 +17,6 @@ public:
 	void Initialise() override;
 	void DrawGrid(Uint8 p_r, Uint8 p_g, Uint8 p_b, Uint8 p_a) override;
 	void Update(float p_delta) override;
-	Tile* GetTile(int p_gridX, int p_gridY) override;
-	Tile* GetTile(Vector2<int> p_gridPos) override;
 	void HandleEvent(SDL_Event& p_ev, SDL_Point p_pos) override;
 	std::map<std::pair<int,int>,Tile*> GetTiles();
 	bool EntityOnTile(Tile* p_tile);
