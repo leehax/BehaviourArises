@@ -49,6 +49,9 @@
     <Filter Include="Header Files\Utility">
       <UniqueIdentifier>{b7d227c5-9369-487d-9b23-3ff1be78d8aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\BehaviourTree">
+      <UniqueIdentifier>{a562bc75-42b3-4c82-a75f-abb2deef65ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -126,6 +129,27 @@
     <ClInclude Include="Dungeon.h">
       <Filter>Header Files\World</Filter>
     </ClInclude>
+    <ClInclude Include="Agent.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="BehaviourTree.h">
+      <Filter>Header Files\BehaviourTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_Node.h">
+      <Filter>Header Files\BehaviourTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BlackBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_Leaf.h">
+      <Filter>Header Files\BehaviourTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_Composites.h">
+      <Filter>Header Files\BehaviourTree</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_Decorators.h">
+      <Filter>Header Files\BehaviourTree</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -187,6 +211,24 @@
     </ClCompile>
     <ClCompile Include="Dungeon.cpp">
       <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Agent.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviourTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BlackBoard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_Leaf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_Composites.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_Decorators.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

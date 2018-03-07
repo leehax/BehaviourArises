@@ -3,6 +3,7 @@
 #include <random>
 
 
+
 namespace
 {
 	//modern c++ randomization
@@ -50,6 +51,7 @@ public:
 //	bool EntityOnTile(Tile* p_tile);
 	//Tile* GetTileWithEntity(const std::string p_type);
 		
+
 private:
 	unsigned int m_columns, m_rows, m_tileSize;
 	unsigned int m_minRoomSize = 3;

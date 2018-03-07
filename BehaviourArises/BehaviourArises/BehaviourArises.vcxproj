@@ -150,7 +150,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Agent.h" />
     <ClInclude Include="AStarPath.h" />
+    <ClInclude Include="BehaviourTree.h" />
+    <ClInclude Include="BlackBoard.h" />
+    <ClInclude Include="BT_Composites.h" />
+    <ClInclude Include="BT_Decorators.h" />
+    <ClInclude Include="BT_Leaf.h" />
+    <ClInclude Include="BT_Node.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="DrawManager.h" />
     <ClInclude Include="Dungeon.h" />
@@ -177,8 +184,14 @@
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Agent.cpp" />
     <ClCompile Include="AStarPath.cpp" />
     <ClCompile Include="BehaviourArises.cpp" />
+    <ClCompile Include="BehaviourTree.cpp" />
+    <ClCompile Include="BlackBoard.cpp" />
+    <ClCompile Include="BT_Composites.cpp" />
+    <ClCompile Include="BT_Decorators.cpp" />
+    <ClCompile Include="BT_Leaf.cpp" />
     <ClCompile Include="DrawManager.cpp" />
     <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="Engine.cpp" />
