@@ -16,7 +16,7 @@ BT_Leaf::~BT_Leaf()
 {
 }
 
-BT_Node::BT_State BT_Leaf::Update()
+BT_Node::BT_State BT_Leaf::Update() //default leaf will just be a random yes/no depending on the probability
 {
 
 	if(std::rand()%100 <m_probability)

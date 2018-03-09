@@ -66,6 +66,12 @@ bool operator==(Vector2<T> lhs, Vector2<T> rhs)
 {
 	return (lhs.x == rhs.x && lhs.y == rhs.y);
 }
+template<typename T>
+bool operator!=(Vector2<T> lhs, Vector2<T> rhs)
+{
+	return (lhs.x != rhs.x || lhs.y != rhs.y);
+}
+
 
 
 template<typename T>

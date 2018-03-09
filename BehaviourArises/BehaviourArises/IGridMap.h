@@ -2,8 +2,10 @@
 #include <map>
 #include "Math.h"
 #include "Config.h"
+#include <memory>
 class Tile;
-class IGridMap 
+class IGridMap :
+	public std::enable_shared_from_this<IGridMap>
 
 {
 public:
@@ -13,7 +15,9 @@ public:
 	virtual void Update(float p_delta) = 0;
 	virtual Tile* GetTile(int p_gridX, int p_gridY);
 	virtual Tile* GetTile(Vector2<int> p_gridPos);
+	std::map<std::pair<int, int>, Tile*> GetTiles() { return m_tiles; };
 	virtual void HandleEvent(SDL_Event& p_ev, SDL_Point p_pos)=0;
+
 protected:
 	std::map<std::pair<int, int>, Tile*> m_tiles;
 };
@@ -35,3 +39,4 @@ inline Tile* IGridMap::GetTile(Vector2<int> p_gridPos)
 	}
 	return	m_tiles[std::make_pair(p_gridPos.x, p_gridPos.y)];
 }
+

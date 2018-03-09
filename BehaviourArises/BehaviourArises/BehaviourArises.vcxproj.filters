@@ -52,6 +52,9 @@
     <Filter Include="Header Files\BehaviourTree">
       <UniqueIdentifier>{a562bc75-42b3-4c82-a75f-abb2deef65ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\BehaviourTree">
+      <UniqueIdentifier>{76bbe483-8fa3-43f6-a41c-ea47d3d40674}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -86,21 +89,6 @@
     </ClInclude>
     <ClInclude Include="Tile.h">
       <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="World.h">
-      <Filter>Header Files\World</Filter>
-    </ClInclude>
-    <ClInclude Include="StarChaser.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="TradingPost.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Spaceship.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="FallenStar.h">
-      <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="IEntity.h">
       <Filter>Header Files\Entities</Filter>
@@ -150,6 +138,9 @@
     <ClInclude Include="BT_Decorators.h">
       <Filter>Header Files\BehaviourTree</Filter>
     </ClInclude>
+    <ClInclude Include="Healer.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -161,26 +152,11 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FallenStar.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="IEntity.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Spaceship.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="StarChaser.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="TradingPost.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="FiniteStateMachine.cpp">
       <Filter>Source Files\FSM</Filter>
-    </ClCompile>
-    <ClCompile Include="World.cpp">
-      <Filter>Source Files\World</Filter>
     </ClCompile>
     <ClCompile Include="Tile.cpp">
       <Filter>Source Files\World</Filter>
@@ -215,20 +191,23 @@
     <ClCompile Include="Agent.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="BehaviourTree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BlackBoard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BT_Leaf.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="BehaviourTree.cpp">
+      <Filter>Source Files\BehaviourTree</Filter>
     </ClCompile>
     <ClCompile Include="BT_Composites.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\BehaviourTree</Filter>
     </ClCompile>
     <ClCompile Include="BT_Decorators.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\BehaviourTree</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_Leaf.cpp">
+      <Filter>Source Files\BehaviourTree</Filter>
+    </ClCompile>
+    <ClCompile Include="Healer.cpp">
+      <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

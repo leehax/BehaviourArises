@@ -1,7 +1,8 @@
 #pragma once
 #include "IGridMap.h"
 #include <random>
-
+#include <memory>
+#include "Healer.h"
 
 
 namespace
@@ -47,7 +48,7 @@ public:
 	void DrawGrid(Uint8 p_r, Uint8 p_g, Uint8 p_b, Uint8 p_a) override;
 	void Update(float p_delta) override;
 	void HandleEvent(SDL_Event& p_ev, SDL_Point p_pos) override;
-	std::map<std::pair<int, int>, Tile*> GetTiles();
+
 //	bool EntityOnTile(Tile* p_tile);
 	//Tile* GetTileWithEntity(const std::string p_type);
 		
@@ -67,14 +68,6 @@ private:
 	bool FillRect(const Rect& p_rect, const char p_type);
 	std::vector<Rect> m_rooms;
 	std::vector<Rect> m_exits;
-	//std::unique_ptr<Spaceship> m_ship;
-	//std::unique_ptr<StarChaser> m_starChaser;
-	//std::unique_ptr<FallenStar> m_fallenStar;
-	//std::unique_ptr<TradingPost> m_tradingPost;
-
-	//std::vector<std::shared_ptr<GuiButton>> m_tileTypeAndEntityButtons;
-	//std::vector<std::shared_ptr<GuiButton>> m_pathFindingAlgorithmButtons;
-	//std::shared_ptr<GuiButton> m_selectedTileTypeOrEntity;
-	//std::shared_ptr<GuiButton> m_selectedPathFindingAlgorithm;
+	std::unique_ptr<Healer> m_healer;
 };
 

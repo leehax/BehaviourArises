@@ -2,13 +2,13 @@
 #include "JPSPath.h"
 #include "DrawManager.h"
 #include "ServiceLocator.h"
-#include "World.h"
+#include "IGridMap.h"
 #include "PathFindNode.h"
 #include "Config.h"
 #include "Tile.h"
 #include <algorithm>
 
-JPSPath::JPSPath(World* p_world)
+JPSPath::JPSPath(IGridMap* p_world)
 {
 
 	m_drawManager = ServiceLocator<DrawManager>::GetService();

@@ -5,7 +5,6 @@
 #include "ServiceLocator.h"
 #include "DrawManager.h"
 #include "SpriteManager.h"
-#include "World.h"
 #include "Dungeon.h"
 
 Engine::Engine()

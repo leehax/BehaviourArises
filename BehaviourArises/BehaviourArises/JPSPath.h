@@ -1,13 +1,14 @@
 #pragma once
 #include <vector>
 #include "PathFindingAlgorithm.h"
+#include <memory>
 
-class World;
+class IGridMap;
 
 class JPSPath:public PathFindingAlgorithm
 {
 public:
-	JPSPath(World* p_world);
+	JPSPath(IGridMap* p_world);
 	~JPSPath();
 
 	

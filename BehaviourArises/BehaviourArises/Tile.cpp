@@ -3,7 +3,6 @@
 #include "DrawManager.h"
 
 #include "ServiceLocator.h"
-#include "World.h"
 #include "SpriteManager.h"
 #include <iostream>
 

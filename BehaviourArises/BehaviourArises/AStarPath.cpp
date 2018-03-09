@@ -2,13 +2,13 @@
 #include "AStarPath.h"
 #include "PathFindNode.h"
 #include "Tile.h"
-#include "World.h"
+#include "IGridMap.h"
 #include "ServiceLocator.h"
 #include "DrawManager.h"
 #include <algorithm>
 #include <iostream>
 
-AStarPath::AStarPath(World* p_world)
+AStarPath::AStarPath(IGridMap* p_world)
 {
 	m_drawManager = ServiceLocator<DrawManager>::GetService();
 	//Create a node at each tile in the world

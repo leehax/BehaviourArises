@@ -1,13 +1,14 @@
 #pragma once
 #include <vector>
 #include "PathFindingAlgorithm.h"
+#include <memory>
 
-class World;
+class IGridMap;
 
 class AStarPath:public PathFindingAlgorithm
 {
 public:
-	AStarPath(World* p_world);
+	AStarPath(IGridMap* p_world);
 	~AStarPath();
 private:
 
