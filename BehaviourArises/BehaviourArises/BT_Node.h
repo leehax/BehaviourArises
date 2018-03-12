@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-
+class Agent;
 class BT_Node
 {
 public:
@@ -9,7 +9,7 @@ public:
 	enum class BT_State{ Null, Success, Failure, Running,};
 
 	virtual BT_State Update() = 0;
-
+	
 	bool Succeeded();
 	bool Failed();
 	bool IsRunning();
@@ -19,7 +19,6 @@ public:
 
 protected:
 	BT_State m_state = BT_State::Null;
-	
 };
 
 inline bool BT_Node::Succeeded()

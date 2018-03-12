@@ -1,6 +1,9 @@
 #pragma once
 #include <map>
 #include "Math.h"
+#include <memory>
+#include "Agent.h"
+
 class BlackBoard
 {
 public:
@@ -32,6 +35,10 @@ public:
 	bool HasVector2f(std::string p_key) const;
 	Vector2<float> GetVector2f(std::string p_key);
 
+	void AddAgent(std::string p_key,Agent* p_agent);
+	bool HasAgent(std::string p_key) const;
+	Agent* GetAgent(std::string p_key);
+
 private:
 	std::map<std::string, int> m_integers;
 	std::map<std::string, float> m_floats;
@@ -39,6 +46,6 @@ private:
 	std::map<std::string, bool> m_booleans;
 	std::map<std::string, Vector2<int>> m_vector2is;
 	std::map<std::string, Vector2<float>> m_vector2fs;
-
+	std::map<std::string, Agent*> m_agents;
 };
 

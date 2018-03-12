@@ -10,7 +10,9 @@ class BT_MoveTo:
 {
 	BT_State Update() override;
 
-	BT_MoveTo(std::shared_ptr<BlackBoard> p_BB);
+	BT_MoveTo(std::shared_ptr<BlackBoard> p_BB): BT_Leaf(p_BB)
+	{
+	} ;
 	
 	
 	
@@ -29,7 +31,7 @@ public:
 	void Update(float p_delta) override;
 	void Draw() override;
 	void Sense() override;
-
+	void MoveTo(Tile* p_tile);
 	
 };
 

@@ -11,8 +11,9 @@
 
 BT_Node::BT_State BT_MoveTo::Update()
 {
-	//Pathfinding
-	//
+	//Tell agent to path find to this target and start moving
+	//while cur tile != target tile return running
+	return BT_State::Success;
 
 }
 
@@ -30,7 +31,7 @@ Healer::Healer(IGridMap* p_world, Tile* p_tile)
 
 	m_world = p_world;
 	m_pathFinding = std::make_shared<AStarPath>(m_world);
-
+	m_blackBoard = std::make_shared<BlackBoard>();
 }
 
 
@@ -40,8 +41,13 @@ Healer::~Healer()
 
 void Healer::CreateBehaviourTree()
 {
-	m_behaviourTree = std::make_shared<BehaviourTree>();
 
+	m_blackBoard->AddVector2i("TargetTile", Vector2<int>(4, 3));
+	m_blackBoard->AddAgent("Healer",this);
+	m_blackBoard->AddVector2i("HealerPosition", m_curTile->GetGridPos());
+	m_behaviourTree = std::make_shared<BehaviourTree>(m_blackBoard);
+	m_blackBoard->GetAgent("Healer");
+	std::cout << "Healer Pos, received from BB" << m_blackBoard->GetVector2i("HealerPosition").x << m_blackBoard->GetVector2i("HealerPosition").y << '\n';
 	auto selector0 = std::make_shared<BT_Selector>();
 	auto selector1 = std::make_shared<BT_Selector>();
 	auto selector2 = std::make_shared<BT_Selector>();
@@ -68,14 +74,14 @@ void Healer::CreateBehaviourTree()
 
 	m_behaviourTree->SetRoot(selector0);
 
-	selector0->AddNodesAsChildren({ sequencer0, sequencer2 });
-	sequencer0->AddNodesAsChildren({ walkToDoor,selector1,walkThroughDoor,closeDoor });
-	selector1->AddNodesAsChildren({ openDoor1, sequencer1, smashDoor });
-	sequencer1->AddNodesAsChildren({ unlockDoor, openDoor2 });
-	sequencer2->AddNodesAsChildren({ walkToWindow, selector2,climbThroughWindow,closeWIndow });
-	selector2->AddNodesAsChildren({ openWindow1, sequencer3,smashWindow });
-	sequencer3->AddNodesAsChildren({ unlockWindow, openWindow2 });
-	
+	//selector0->AddNodesAsChildren({ sequencer0, sequencer2 });
+	//sequencer0->AddNodesAsChildren({ walkToDoor,selector1,walkThroughDoor,closeDoor });
+	//selector1->AddNodesAsChildren({ openDoor1, sequencer1, smashDoor });
+	//sequencer1->AddNodesAsChildren({ unlockDoor, openDoor2 });
+	//sequencer2->AddNodesAsChildren({ walkToWindow, selector2,climbThroughWindow,closeWIndow });
+	//selector2->AddNodesAsChildren({ openWindow1, sequencer3,smashWindow });
+	//sequencer3->AddNodesAsChildren({ unlockWindow, openWindow2 });
+	//
 }
 
 void Healer::Update(float p_delta)
@@ -89,4 +95,10 @@ void Healer::Draw()
 
 void Healer::Sense()
 {
+}
+
+void Healer::MoveTo(Tile* p_tile)
+{
+	m_pathFinding->FindPath(m_curTile, p_tile);
+
 }

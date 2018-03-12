@@ -101,6 +101,7 @@ void Dungeon::Initialise()
 	//}
 
 	m_healer = std::make_unique<Healer>(this,GetTile(5, 5));
+	m_healer->CreateBehaviourTree();
 }
 
 void Dungeon::DrawGrid(Uint8 p_r, Uint8 p_g, Uint8 p_b, Uint8 p_a)

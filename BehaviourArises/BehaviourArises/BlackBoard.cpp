@@ -137,3 +137,24 @@ Vector2<float> BlackBoard::GetVector2f(std::string p_key)
 
 	return m_vector2fs[p_key];
 }
+
+void BlackBoard::AddAgent(std::string p_key, Agent* p_agent)
+{
+	m_agents[p_key] = p_agent;
+}
+
+bool BlackBoard::HasAgent(std::string p_key) const
+{
+	return m_agents.find(p_key) != m_agents.end();
+}
+
+Agent* BlackBoard::GetAgent(std::string p_key)
+{
+	if(!HasAgent(p_key))
+	{
+		std::cout << "Agent with key " << p_key.c_str() << " not found, returning null";
+		return nullptr;
+	}
+
+	return m_agents[p_key];
+}
