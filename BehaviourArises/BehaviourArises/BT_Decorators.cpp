@@ -21,6 +21,12 @@ bool BT_Decorator::HasChild() const
 	return m_childNode != nullptr;
 }
 
+void BT_Decorator::SetAgent(Agent* p_agent)
+{
+	m_agent = p_agent;
+	m_childNode->SetAgent(p_agent);
+}
+
 BT_Node::BT_State BT_Inverter::Update()
 {
 	auto state = GetChild()->Update();

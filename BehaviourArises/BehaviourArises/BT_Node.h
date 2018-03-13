@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <iostream>
 class Agent;
 class BT_Node
 {
@@ -9,40 +10,15 @@ public:
 	enum class BT_State{ Null, Success, Failure, Running,};
 
 	virtual BT_State Update() = 0;
-	
-	bool Succeeded();
-	bool Failed();
-	bool IsRunning();
-	bool Stopped();
-
-	void Reset();
-
+	virtual void SetAgent(Agent* p_agent);
 protected:
 	BT_State m_state = BT_State::Null;
+	Agent* m_agent;
 };
 
-inline bool BT_Node::Succeeded()
+inline void BT_Node::SetAgent(Agent* p_agent)
 {
-	return m_state == BT_State::Success;
+
+	m_agent = p_agent;
 }
 
-inline bool BT_Node::Failed()
-{
-	return m_state == BT_State::Failure;
-}
-
-inline bool BT_Node::IsRunning()
-{
-	return m_state == BT_State::Running;
-}
-
-
-
-inline bool BT_Node::Stopped()
-{
-	return m_state == BT_State::Success || m_state == BT_State::Failure;
-}
-
-inline void BT_Node::Reset()
-{
-}

@@ -152,9 +152,30 @@ Agent* BlackBoard::GetAgent(std::string p_key)
 {
 	if(!HasAgent(p_key))
 	{
-		std::cout << "Agent with key " << p_key.c_str() << " not found, returning null";
+		std::cout << "Agent with key " << p_key.c_str() << " not found, returning null\n";
 		return nullptr;
 	}
 
 	return m_agents[p_key];
+}
+
+void BlackBoard::AddTile(std::string p_key, Tile* p_tile)
+{
+	m_tiles[p_key] = p_tile;
+}
+
+bool BlackBoard::HasTile(std::string p_key) const
+{
+	return m_tiles.find(p_key) != m_tiles.end();
+}
+
+Tile* BlackBoard::GetTile(std::string p_key)
+{
+	if (!HasTile(p_key))
+	{
+		std::cout << "Tile with key " << p_key.c_str() << " not found, returning null\n";
+		return nullptr;
+	}
+
+	return m_tiles[p_key];
 }

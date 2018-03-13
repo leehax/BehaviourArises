@@ -9,12 +9,49 @@
 #include "BlackBoard.h"
 #include <iostream>
 
+// MoveTo(Agent*, "targetIdentifier")
+/*
+   Run()
+{
+agent.position = calculateddirection * agent.bb.agentspeed;
+}
+
+new FindTarget(varioustypes, "woundedAlly"));
+new calpath()
+new MoveTo(&healer, "woundedAlly")
+ */
+
+
 BT_Node::BT_State BT_MoveTo::Update()
 {
-	//Tell agent to path find to this target and start moving
-	//while cur tile != target tile return running
+	//m_agent->SetCurTile()
+	if (!m_agent->GetPath().empty()) {
+		{
+			m_agent->GetPath().pop_back();
+			m_agent->SetCurTile(m_agent->GetPath().back());
+			std::cout << "MoveTo Running\n";
+			return BT_State::Running;
+		}
+	}
+	std::cout << "MoveTo Success\n";
 	return BT_State::Success;
 
+}
+
+
+BT_Node::BT_State BT_SetDestination::Update()
+{
+	m_blackBoard->AddVector2i("TargetLocation", Vector2<int>(11, 9));
+	std::cout << "SetDestination Success\n";
+	return BT_State::Success;
+}
+
+BT_Node::BT_State BT_FindPath::Update()
+{
+
+	m_agent->FindPath(m_blackBoard->GetVector2i("TargetLocation"));
+	std::cout << "FindPath Success\n";
+	return BT_State::Success;
 }
 
 Healer::Healer(IGridMap* p_world, Tile* p_tile)
@@ -42,55 +79,36 @@ Healer::~Healer()
 void Healer::CreateBehaviourTree()
 {
 
-	m_blackBoard->AddVector2i("TargetTile", Vector2<int>(4, 3));
-	m_blackBoard->AddAgent("Healer",this);
+
 	m_blackBoard->AddVector2i("HealerPosition", m_curTile->GetGridPos());
 	m_behaviourTree = std::make_shared<BehaviourTree>(m_blackBoard);
-	m_blackBoard->GetAgent("Healer");
 	std::cout << "Healer Pos, received from BB" << m_blackBoard->GetVector2i("HealerPosition").x << m_blackBoard->GetVector2i("HealerPosition").y << '\n';
-	auto selector0 = std::make_shared<BT_Selector>();
-	auto selector1 = std::make_shared<BT_Selector>();
-	auto selector2 = std::make_shared<BT_Selector>();
+
 
 	auto sequencer0 = std::make_shared<BT_Sequencer>();
-	auto sequencer1 = std::make_shared<BT_Sequencer>();
-	auto sequencer2 = std::make_shared<BT_Sequencer>();
-	auto sequencer3 = std::make_shared<BT_Sequencer>();
 
-	auto walkToDoor = std::make_shared<BT_Leaf>("Walk To Door",100);
-	auto openDoor1 = std::make_shared<BT_Leaf>("Open Door",15);
-	auto unlockDoor = std::make_shared<BT_Leaf>("Unlock Door",25);
-	auto openDoor2 = std::make_shared<BT_Leaf>("Open door after unlocking",90);
-	auto smashDoor = std::make_shared<BT_Leaf>("Smash Door",60);
-	auto walkThroughDoor = std::make_shared<BT_Leaf>("Walk Through Door",100);
-	auto closeDoor = std::make_shared<BT_Leaf>("Close Door",100);
-	auto walkToWindow = std::make_shared<BT_Leaf>("Walk To Window",100);
-	auto openWindow1 = std::make_shared<BT_Leaf>("Open Window",50);
-	auto unlockWindow = std::make_shared<BT_Leaf>("Unlock Window", 40);
-	auto openWindow2 = std::make_shared<BT_Leaf>("Open Window After Unlocking it",85);
-	auto smashWindow = std::make_shared<BT_Leaf>("Smash window",95);
-	auto climbThroughWindow = std::make_shared<BT_Leaf>("Climb Through Window",85);
-	auto closeWIndow = std::make_shared<BT_Leaf>("Close Window",100);
 
-	m_behaviourTree->SetRoot(selector0);
 
-	//selector0->AddNodesAsChildren({ sequencer0, sequencer2 });
-	//sequencer0->AddNodesAsChildren({ walkToDoor,selector1,walkThroughDoor,closeDoor });
-	//selector1->AddNodesAsChildren({ openDoor1, sequencer1, smashDoor });
-	//sequencer1->AddNodesAsChildren({ unlockDoor, openDoor2 });
-	//sequencer2->AddNodesAsChildren({ walkToWindow, selector2,climbThroughWindow,closeWIndow });
-	//selector2->AddNodesAsChildren({ openWindow1, sequencer3,smashWindow });
-	//sequencer3->AddNodesAsChildren({ unlockWindow, openWindow2 });
-	//
+	auto setTarget = std::make_shared<BT_SetDestination>(m_blackBoard);
+	auto findPath = std::make_shared<BT_FindPath>(m_blackBoard);
+	auto moveTo = std::make_shared<BT_MoveTo>(m_blackBoard);
+	m_behaviourTree->SetRoot(sequencer0);
+
+	sequencer0->AddNodesAsChildren({ setTarget, findPath, moveTo });
+
+	
+	sequencer0->SetAgent(this);
 }
 
 void Healer::Update(float p_delta)
 {
+	m_behaviourTree->Update();
 }
 
 void Healer::Draw()
 {
 	m_drawManager->Draw(m_sprite, m_curTile->GetWorldPos().x, m_curTile->GetWorldPos().y ,1);
+	m_pathFinding->Draw();
 }
 
 void Healer::Sense()
@@ -99,6 +117,6 @@ void Healer::Sense()
 
 void Healer::MoveTo(Tile* p_tile)
 {
-	m_pathFinding->FindPath(m_curTile, p_tile);
+	//m_pathFinding->FindPath(m_curTile, p_tile);
 
 }

@@ -37,70 +37,22 @@ void Dungeon::Initialise()
 		}
 	}
 
-	if (!CreateRoom(m_rows / 2, m_columns / 2, static_cast<Direction>(RandomInt(4)), true))
-	{
-		std::cout << "Failed creating first room\n";
-		return;
-	}
-
-	for (int i = 1; i < m_maxFeatures; i++)
-	{
-		if (!CreateFeature())
-		{
-			std::cout << "Failed creating feature, Created " << i << " amount \n";
-			break;
-		}
-	}
-	/*if(!LoadMap("../External/map.txt"))
-	{
-		std::cout << "Failed to initialize map";
-	}*/
-
-	//std::srand(std::time(nullptr));
-	//BehaviourTree BT;
-	//auto selector0 = std::make_shared<BT_Selector>();
-	//auto selector1 = std::make_shared<BT_Selector>();
-	//auto selector2 = std::make_shared<BT_Selector>();
-
-	//auto sequencer0 = std::make_shared<BT_Sequencer>();
-	//auto sequencer1 = std::make_shared<BT_Sequencer>();
-	//auto sequencer2 = std::make_shared<BT_Sequencer>();
-	//auto sequencer3 = std::make_shared<BT_Sequencer>();
-
-	//auto walkToDoor = std::make_shared<BT_Leaf>("Walk To Door",100);
-	//auto openDoor1 = std::make_shared<BT_Leaf>("Open Door",15);
-	//auto unlockDoor = std::make_shared<BT_Leaf>("Unlock Door",25);
-	//auto openDoor2 = std::make_shared<BT_Leaf>("Open door after unlocking",90);
-	//auto smashDoor = std::make_shared<BT_Leaf>("Smash Door",60);
-	//auto walkThroughDoor = std::make_shared<BT_Leaf>("Walk Through Door",100);
-	//auto closeDoor = std::make_shared<BT_Leaf>("Close Door",100);
-	//auto walkToWindow = std::make_shared<BT_Leaf>("Walk To Window",100);
-	//auto openWindow1 = std::make_shared<BT_Leaf>("Open Window",50);
-	//auto unlockWindow = std::make_shared<BT_Leaf>("Unlock Window", 40);
-	//auto openWindow2 = std::make_shared<BT_Leaf>("Open Window After Unlocking it",85);
-	//auto smashWindow = std::make_shared<BT_Leaf>("Smash window",95);
-	//auto climbThroughWindow = std::make_shared<BT_Leaf>("Climb Through Window",85);
-	//auto closeWIndow = std::make_shared<BT_Leaf>("Close Window",100);
-
-	//BT.SetRoot(selector0);
-
-	//selector0->AddNodesAsChildren({ sequencer0, sequencer2 });
-	//sequencer0->AddNodesAsChildren({ walkToDoor,selector1,walkThroughDoor,closeDoor });
-	//selector1->AddNodesAsChildren({ openDoor1, sequencer1, smashDoor });
-	//sequencer1->AddNodesAsChildren({ unlockDoor, openDoor2 });
-	//sequencer2->AddNodesAsChildren({ walkToWindow, selector2,climbThroughWindow,closeWIndow });
-	//selector2->AddNodesAsChildren({ openWindow1, sequencer3,smashWindow });
-	//sequencer3->AddNodesAsChildren({ unlockWindow, openWindow2 });
-	//if(BT.Update()==BT_Node::BT_State::Success)
+	//if (!CreateRoom(m_rows / 2, m_columns / 2, static_cast<Direction>(RandomInt(4)), true))
 	//{
-	//	std::cout << "SUCCESS You escaped\n";
-	//}
-	//else
-	//{
-	//	std::cout << "Sorry you didnt escape\n";
+	//	std::cout << "Failed creating first room\n";
+	//	return;
 	//}
 
-	m_healer = std::make_unique<Healer>(this,GetTile(5, 5));
+	//for (int i = 1; i < m_maxFeatures; i++)
+	//{
+	//	if (!CreateFeature())
+	//	{
+	//		std::cout << "Failed creating feature, Created " << i << " amount \n";
+	//		break;
+	//	}
+	//}
+	LoadMap("../External/map.txt");
+	m_healer = std::make_unique<Healer>(this,GetTile(1, 1));
 	m_healer->CreateBehaviourTree();
 }
 

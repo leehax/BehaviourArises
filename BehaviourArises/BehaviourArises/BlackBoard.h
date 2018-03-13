@@ -38,6 +38,10 @@ public:
 	void AddAgent(std::string p_key,Agent* p_agent);
 	bool HasAgent(std::string p_key) const;
 	Agent* GetAgent(std::string p_key);
+	
+	void AddTile(std::string p_key, Tile* p_tile);
+	bool HasTile(std::string p_key) const;
+	Tile* GetTile(std::string p_key);
 
 private:
 	std::map<std::string, int> m_integers;
@@ -47,5 +51,6 @@ private:
 	std::map<std::string, Vector2<int>> m_vector2is;
 	std::map<std::string, Vector2<float>> m_vector2fs;
 	std::map<std::string, Agent*> m_agents;
+	std::map<std::string, Tile*> m_tiles;
 };
 

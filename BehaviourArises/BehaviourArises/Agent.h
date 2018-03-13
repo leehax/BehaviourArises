@@ -25,7 +25,9 @@ public:
 	virtual float GetHealth();
 	virtual void AdjustHealth(float p_amount);
 	virtual void CreateBehaviourTree() = 0;
-
+	virtual bool FindPath(Tile* p_targetTile);
+	virtual bool FindPath(Vector2<int> p_targetCoord);
+	virtual std::vector<Tile*> GetPath();
 protected:
 	std::shared_ptr<BlackBoard> m_blackBoard;
 	std::shared_ptr<BehaviourTree> m_behaviourTree;
@@ -34,6 +36,8 @@ protected:
 	int m_visionRange;
 	float m_currentHealth;
 	float m_maxHealth;
-	IGridMap* m_world;
+
+	std::vector<Tile*> m_path;
+
 };
 

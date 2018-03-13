@@ -109,7 +109,7 @@ std::vector< Tile* > AStarPath::RecursivePathFinding()
 			return RecursivePathFinding();
 		}
 		//no valid path found to target
-		return {};
+		return {nullptr};
 	}
 }
 

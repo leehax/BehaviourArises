@@ -11,7 +11,7 @@ public:
 	void AddNodeAsChild(std::shared_ptr<BT_Node> p_node);
 	void AddNodesAsChildren(std::initializer_list<std::shared_ptr<BT_Node>>&& p_nodes);
 	bool HasChildren() const;
-
+	void SetAgent(Agent* p_agent) override;
 
 protected:
 	std::vector<std::shared_ptr<BT_Node>> m_childNodes;

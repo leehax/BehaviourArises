@@ -16,6 +16,11 @@ void IEntity::SetCurTile(Tile* p_tile)
 	m_curTile = p_tile;
 }
 
+void IEntity::SetCurTile(Vector2<int> p_tileCoord)
+{
+	m_curTile = m_world->GetTile(p_tileCoord);
+}
+
 Vector2<int> IEntity::GetGridPos()
 {
 	return m_curTile->GetGridPos();
