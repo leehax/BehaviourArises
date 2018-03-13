@@ -52,8 +52,8 @@ void Dungeon::Initialise()
 	//	}
 	//}
 	LoadMap("../External/map.txt");
-	m_healer = std::make_unique<Healer>(this,GetTile(1, 1));
-	m_healer->CreateBehaviourTree();
+	m_healer = std::make_shared<Healer>(this,GetTile(1, 1));
+	m_healer->CreateBehaviourTree(m_healer);
 }
 
 void Dungeon::DrawGrid(Uint8 p_r, Uint8 p_g, Uint8 p_b, Uint8 p_a)

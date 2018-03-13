@@ -21,11 +21,14 @@ bool BT_Decorator::HasChild() const
 	return m_childNode != nullptr;
 }
 
-void BT_Decorator::SetAgent(Agent* p_agent)
+void BT_Decorator::Init(std::shared_ptr<Agent> p_agent, std::shared_ptr<BlackBoard> p_pBB)
 {
 	m_agent = p_agent;
-	m_childNode->SetAgent(p_agent);
+	m_privateBlackBoard = p_pBB;
+	m_childNode->Init(p_agent, p_pBB);
 }
+
+
 
 BT_Node::BT_State BT_Inverter::Update()
 {

@@ -9,9 +9,9 @@ public:
 	virtual ~BT_Composite();
 
 	void AddNodeAsChild(std::shared_ptr<BT_Node> p_node);
-	void AddNodesAsChildren(std::initializer_list<std::shared_ptr<BT_Node>>&& p_nodes);
+	void AddNodesAsChildren(std::vector<std::shared_ptr<BT_Node>> p_nodes);
 	bool HasChildren() const;
-	void SetAgent(Agent* p_agent) override;
+	void Init(std::shared_ptr<Agent> p_agent, std::shared_ptr<BlackBoard> p_pBB) override;
 
 protected:
 	std::vector<std::shared_ptr<BT_Node>> m_childNodes;
@@ -30,4 +30,13 @@ class BT_Sequencer:
 {
 public:
 	BT_State Update() override;
+};
+
+class BT_SequencerMemorize :
+	public BT_Composite
+{
+public:
+	BT_State Update() override;
+private:
+	int m_index = 0;
 };

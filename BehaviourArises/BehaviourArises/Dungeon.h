@@ -68,6 +68,6 @@ private:
 	bool FillRect(const Rect& p_rect, const char p_type);
 	std::vector<Rect> m_rooms;
 	std::vector<Rect> m_exits;
-	std::unique_ptr<Healer> m_healer;
+	std::shared_ptr<Healer> m_healer;
 };
 

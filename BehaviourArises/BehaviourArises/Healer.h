@@ -22,9 +22,10 @@ class BT_SetDestination:
 {
 public:
 	BT_State Update() override;
-
-	BT_SetDestination(std::shared_ptr<BlackBoard> p_BB) : BT_Leaf(p_BB)
+	Vector2<int> m_target;
+	BT_SetDestination(std::shared_ptr<BlackBoard> p_BB, Vector2<int> p_target) : BT_Leaf(p_BB)
 	{
+		m_target = p_target;
 	}
 };
 class BT_FindPath:
@@ -49,7 +50,7 @@ public:
 	~Healer();
 
 	
-	void CreateBehaviourTree() override;
+	void CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent) override;
 	void Update(float p_delta) override;
 	void Draw() override;
 	void Sense() override;

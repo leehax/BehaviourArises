@@ -24,10 +24,14 @@ BT_Node::BT_State BehaviourTree::Update()
 	return m_rootNode->Update();
 }
 
-void BehaviourTree::SetRoot(const std::shared_ptr<BT_Node>& p_rootNode)
+void BehaviourTree::Init(const std::shared_ptr<BT_Node>& p_rootNode, std::shared_ptr<Agent> p_agent)
 {
+
 	m_rootNode = p_rootNode;
+	m_rootNode->Init(p_agent, m_privateBlackBoard);
 }
+
+
 
 std::shared_ptr<BlackBoard> BehaviourTree::GetPrivateBlackBoard()
 {

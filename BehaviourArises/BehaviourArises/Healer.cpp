@@ -25,14 +25,12 @@ new MoveTo(&healer, "woundedAlly")
 BT_Node::BT_State BT_MoveTo::Update()
 {
 	//m_agent->SetCurTile()
-	if (!m_agent->GetPath().empty()) {
-		{
-			m_agent->GetPath().pop_back();
-			m_agent->SetCurTile(m_agent->GetPath().back());
-			std::cout << "MoveTo Running\n";
-			return BT_State::Running;
-		}
+	if (m_agent->GetCurrentTile()->GetGridPos()!=m_blackBoard->GetVector2i("TargetLocation")) {
+		m_agent->MoveToNextTile();
+		std::cout << "MoveTo Running\n";
+		return BT_State::Running;
 	}
+	m_agent->ClearPath();
 	std::cout << "MoveTo Success\n";
 	return BT_State::Success;
 
@@ -41,7 +39,7 @@ BT_Node::BT_State BT_MoveTo::Update()
 
 BT_Node::BT_State BT_SetDestination::Update()
 {
-	m_blackBoard->AddVector2i("TargetLocation", Vector2<int>(11, 9));
+	m_blackBoard->SetVector2i("TargetLocation", m_target);
 	std::cout << "SetDestination Success\n";
 	return BT_State::Success;
 }
@@ -49,9 +47,16 @@ BT_Node::BT_State BT_SetDestination::Update()
 BT_Node::BT_State BT_FindPath::Update()
 {
 
-	m_agent->FindPath(m_blackBoard->GetVector2i("TargetLocation"));
-	std::cout << "FindPath Success\n";
-	return BT_State::Success;
+
+	if(m_agent->FindPath(m_blackBoard->GetVector2i("TargetLocation")))
+	{
+		std::cout << "FindPath Success\n";
+		return BT_State::Success;
+	}
+		
+	std::cout << "FindPath Fail\n";
+	return BT_State::Failure;
+	
 }
 
 Healer::Healer(IGridMap* p_world, Tile* p_tile)
@@ -76,33 +81,43 @@ Healer::~Healer()
 {
 }
 
-void Healer::CreateBehaviourTree()
+void Healer::CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent)
 {
 
 
-	m_blackBoard->AddVector2i("HealerPosition", m_curTile->GetGridPos());
+	m_blackBoard->SetVector2i("HealerPosition", m_curTile->GetGridPos());
 	m_behaviourTree = std::make_shared<BehaviourTree>(m_blackBoard);
 	std::cout << "Healer Pos, received from BB" << m_blackBoard->GetVector2i("HealerPosition").x << m_blackBoard->GetVector2i("HealerPosition").y << '\n';
 
 
-	auto sequencer0 = std::make_shared<BT_Sequencer>();
+	auto patrolSequence = std::make_shared<BT_SequencerMemorize>();
 
 
-
-	auto setTarget = std::make_shared<BT_SetDestination>(m_blackBoard);
+	auto moveToA = std::make_shared<BT_SequencerMemorize>();
+	auto setTargetA = std::make_shared<BT_SetDestination>(m_blackBoard,Vector2<int>(11,9));
 	auto findPath = std::make_shared<BT_FindPath>(m_blackBoard);
 	auto moveTo = std::make_shared<BT_MoveTo>(m_blackBoard);
-	m_behaviourTree->SetRoot(sequencer0);
 
-	sequencer0->AddNodesAsChildren({ setTarget, findPath, moveTo });
+	auto moveToB = std::make_shared<BT_SequencerMemorize>();
+	auto setTargetB = std::make_shared<BT_SetDestination>(m_blackBoard, Vector2<int>(2, 11));
+	auto moveToC = std::make_shared<BT_SequencerMemorize>();
+	auto setTargetC = std::make_shared<BT_SetDestination>(m_blackBoard, Vector2<int>(20, 20));
+	moveToA->AddNodesAsChildren({ setTargetA, findPath, moveTo });
+	moveToB->AddNodesAsChildren({ setTargetB, findPath, moveTo });
+	moveToC->AddNodesAsChildren({ setTargetC, findPath, moveTo });
 
-	
-	sequencer0->SetAgent(this);
+	patrolSequence->AddNodesAsChildren({ moveToA,moveToB,moveToC });
+	m_behaviourTree->Init(patrolSequence, p_sharedPtrToThisAgent);
+
 }
 
 void Healer::Update(float p_delta)
 {
-	m_behaviourTree->Update();
+	m_behaviourTreeTickTime -= p_delta;
+	if (m_behaviourTreeTickTime <= 0) {
+		m_behaviourTree->Update();
+		m_behaviourTreeTickTime = 1.0f;
+	}
 }
 
 void Healer::Draw()

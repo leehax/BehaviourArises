@@ -14,7 +14,7 @@ public:
 
 	BT_State Update() override;
 
-	void SetRoot(const std::shared_ptr<BT_Node>& p_rootNode);
+	void Init(const std::shared_ptr<BT_Node>& p_rootNode, std::shared_ptr<Agent> p_agent);
 	std::shared_ptr<BlackBoard> GetPrivateBlackBoard();
 	std::shared_ptr<BlackBoard> GetPublicBlackBoard();
 	void SetPublicBlackBoard(const std::shared_ptr<BlackBoard>& p_publicBlackBoard);

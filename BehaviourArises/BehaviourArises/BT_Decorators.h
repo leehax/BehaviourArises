@@ -10,7 +10,7 @@ public:
 	void SetChild(std::shared_ptr<BT_Node> p_node);
 	std::shared_ptr<BT_Node> GetChild() const;
 	bool HasChild() const;
-	void SetAgent(Agent* p_agent) override;
+	void Init(std::shared_ptr<Agent> p_agent,std::shared_ptr<BlackBoard> p_pBB) override;
 protected:
 
 	std::shared_ptr<BT_Node> m_childNode;

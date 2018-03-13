@@ -11,35 +11,35 @@ public:
 	~BlackBoard();
 
 
-	void AddInt(std::string p_key, int p_value);
+	void SetInt(std::string p_key, int p_value);
 	bool HasInt(std::string p_key) const;
 	int GetInt(std::string p_key);
 	
-	void AddFloat(std::string p_key, float p_value);
+	void SetFloat(std::string p_key, float p_value);
 	bool HasFloat(std::string p_key) const;
 	float GetFloat(std::string p_key);
 
-	void AddString(std::string p_key, std::string p_value);
+	void SetString(std::string p_key, std::string p_value);
 	bool HasString(std::string p_key) const;
 	std::string GetString(std::string p_key);
 
-	void AddBool(std::string p_key, bool p_value);
+	void SetBool(std::string p_key, bool p_value);
 	bool HasBool(std::string p_key) const;
 	bool GetBool(std::string p_key);
 
-	void AddVector2i(std::string p_key, Vector2<int> p_value);
+	void SetVector2i(std::string p_key, Vector2<int> p_value);
 	bool HasVector2i(std::string p_key) const;
 	Vector2<int> GetVector2i(std::string p_key);
 
-	void AddVector2f(std::string p_key, Vector2<float> p_value);
+	void SetVector2f(std::string p_key, Vector2<float> p_value);
 	bool HasVector2f(std::string p_key) const;
 	Vector2<float> GetVector2f(std::string p_key);
 
-	void AddAgent(std::string p_key,Agent* p_agent);
+	void SetAgent(std::string p_key,Agent* p_agent);
 	bool HasAgent(std::string p_key) const;
 	Agent* GetAgent(std::string p_key);
 	
-	void AddTile(std::string p_key, Tile* p_tile);
+	void SetTile(std::string p_key, Tile* p_tile);
 	bool HasTile(std::string p_key) const;
 	Tile* GetTile(std::string p_key);
 

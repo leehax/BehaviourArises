@@ -12,7 +12,7 @@ BlackBoard::~BlackBoard()
 {
 }
 
-void BlackBoard::AddInt(std::string p_key, int p_value)
+void BlackBoard::SetInt(std::string p_key, int p_value)
 {
 	m_integers[p_key] = p_value;
 }
@@ -33,7 +33,7 @@ int BlackBoard::GetInt(std::string p_key)
 	return m_integers[p_key];
 }
 
-void BlackBoard::AddFloat(std::string p_key, float p_value)
+void BlackBoard::SetFloat(std::string p_key, float p_value)
 {
 	m_floats[p_key] = p_value;
 }
@@ -54,7 +54,7 @@ float BlackBoard::GetFloat(std::string p_key)
 	return m_floats[p_key];
 }
 
-void BlackBoard::AddString(std::string p_key, std::string p_value)
+void BlackBoard::SetString(std::string p_key, std::string p_value)
 {
 	m_strings[p_key] = p_value;
 }
@@ -75,7 +75,7 @@ std::string BlackBoard::GetString(std::string p_key)
 	return m_strings[p_key];
 }
 
-void BlackBoard::AddBool(std::string p_key, bool p_value)
+void BlackBoard::SetBool(std::string p_key, bool p_value)
 {
 	m_booleans[p_key] = p_value;
 }
@@ -96,7 +96,7 @@ bool BlackBoard::GetBool(std::string p_key)
 	return m_booleans[p_key];
 }
 
-void BlackBoard::AddVector2i(std::string p_key, Vector2<int> p_value)
+void BlackBoard::SetVector2i(std::string p_key, Vector2<int> p_value)
 {
 	m_vector2is[p_key] = p_value;
 }
@@ -117,7 +117,7 @@ Vector2<int> BlackBoard::GetVector2i(std::string p_key)
 	return m_vector2is[p_key];
 }
 
-void BlackBoard::AddVector2f(std::string p_key, Vector2<float> p_value)
+void BlackBoard::SetVector2f(std::string p_key, Vector2<float> p_value)
 {
 	m_vector2fs[p_key] = p_value;
 }
@@ -138,7 +138,7 @@ Vector2<float> BlackBoard::GetVector2f(std::string p_key)
 	return m_vector2fs[p_key];
 }
 
-void BlackBoard::AddAgent(std::string p_key, Agent* p_agent)
+void BlackBoard::SetAgent(std::string p_key, Agent* p_agent)
 {
 	m_agents[p_key] = p_agent;
 }
@@ -159,7 +159,7 @@ Agent* BlackBoard::GetAgent(std::string p_key)
 	return m_agents[p_key];
 }
 
-void BlackBoard::AddTile(std::string p_key, Tile* p_tile)
+void BlackBoard::SetTile(std::string p_key, Tile* p_tile)
 {
 	m_tiles[p_key] = p_tile;
 }
