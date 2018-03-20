@@ -3,6 +3,8 @@
 #include <random>
 #include <memory>
 #include "Healer.h"
+#include "Tank.h"
+#include "EnemyMob.h"
 
 
 namespace
@@ -48,7 +50,7 @@ public:
 	void DrawGrid(Uint8 p_r, Uint8 p_g, Uint8 p_b, Uint8 p_a) override;
 	void Update(float p_delta) override;
 	void HandleEvent(SDL_Event& p_ev, SDL_Point p_pos) override;
-
+	void CheckCollisions(std::shared_ptr<Agent> p_first, std::shared_ptr<Agent> p_second);
 //	bool EntityOnTile(Tile* p_tile);
 	//Tile* GetTileWithEntity(const std::string p_type);
 		
@@ -69,5 +71,8 @@ private:
 	std::vector<Rect> m_rooms;
 	std::vector<Rect> m_exits;
 	std::shared_ptr<Healer> m_healer;
+	std::shared_ptr<Tank> m_tank;
+	std::shared_ptr<BlackBoard> m_worldBlackBoard;
+	std::vector<std::shared_ptr<EnemyMob>> m_enemies;
 };
 

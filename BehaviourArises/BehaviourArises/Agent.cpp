@@ -58,19 +58,33 @@ std::vector<Tile*> Agent::GetPath()
 	return m_path;
 }
 
-void Agent::MoveToNextTile()
+bool Agent::MoveToNextTile()
 {
-	if (m_path.empty() == false) {
-		if (m_curTile != m_path.back())
-		{
+	if (m_path.size()>1) {
+		
+			m_path.pop_back();
 			Vector2<int> direction; //normalize the x and y component individually, instead of normalizing the entire vector, to ensure proper movement
 			direction.x = (m_path.back()->GetGridPos().x - m_curTile->GetGridPos().x) / std::max(std::abs(m_path.back()->GetGridPos().x - m_curTile->GetGridPos().x), 1);
 			direction.y = (m_path.back()->GetGridPos().y - m_curTile->GetGridPos().y) / std::max(std::abs(m_path.back()->GetGridPos().y - m_curTile->GetGridPos().y), 1);
 			m_curTile = m_world->GetTile(m_curTile->GetGridPos() + direction);
-		}
-		else {
-			m_path.pop_back();
-		}
+
+		return true;
+	}
+	return false;
+}
+
+std::string Agent::GetName()
+{
+	return m_name;
+}
+
+void Agent::OnAgentEnteredSenseArea(std::shared_ptr<Agent> p_other)
+{
+	if(std::find(m_sensedAgents.begin(),m_sensedAgents.end(),p_other)!=m_sensedAgents.end())
+	{
+	}
+	else {
+		m_sensedAgents.push_back(p_other);
 	}
 }
 

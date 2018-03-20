@@ -43,6 +43,10 @@ public:
 	bool HasTile(std::string p_key) const;
 	Tile* GetTile(std::string p_key);
 
+	void SetBTNodes(std::string p_key, std::vector<BT_Node*> p_nodes);
+	bool HasBTNodes(std::string p_key) const;
+	std::vector<BT_Node*> GetBTNodes(std::string p_key);
+
 private:
 	std::map<std::string, int> m_integers;
 	std::map<std::string, float> m_floats;
@@ -52,5 +56,6 @@ private:
 	std::map<std::string, Vector2<float>> m_vector2fs;
 	std::map<std::string, Agent*> m_agents;
 	std::map<std::string, Tile*> m_tiles;
+	std::map<std::string, std::vector<BT_Node*>> m_BTNodes;
 };
 

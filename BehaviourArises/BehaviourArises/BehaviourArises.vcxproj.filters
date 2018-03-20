@@ -55,6 +55,12 @@
     <Filter Include="Source Files\BehaviourTree">
       <UniqueIdentifier>{76bbe483-8fa3-43f6-a41c-ea47d3d40674}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\BehaviourTree\Leafs">
+      <UniqueIdentifier>{c899e672-68d2-4a77-bd1b-fa105c90887e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BehaviourTree\Leafs">
+      <UniqueIdentifier>{4421fedc-f13f-4d0b-bfa3-e2cf173c41f9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -141,6 +147,42 @@
     <ClInclude Include="Healer.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_Move.h">
+      <Filter>Header Files\BehaviourTree\Leafs</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_SetDestination.h">
+      <Filter>Header Files\BehaviourTree\Leafs</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_FindPath.h">
+      <Filter>Header Files\BehaviourTree\Leafs</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_AllyNeedsHealing.h">
+      <Filter>Header Files\BehaviourTree\Leafs</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_Attack.h">
+      <Filter>Header Files\BehaviourTree\Leafs</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_Heal.h">
+      <Filter>Header Files\BehaviourTree\Leafs</Filter>
+    </ClInclude>
+    <ClInclude Include="Tank.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyMob.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Damage.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_Defend.h">
+      <Filter>Header Files\BehaviourTree\Leafs</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_INeedHealing.h">
+      <Filter>Header Files\BehaviourTree\Leafs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -208,6 +250,39 @@
     </ClCompile>
     <ClCompile Include="Healer.cpp">
       <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_Move.cpp">
+      <Filter>Source Files\BehaviourTree\Leafs</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_SetDestination.cpp">
+      <Filter>Source Files\BehaviourTree\Leafs</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_FindPath.cpp">
+      <Filter>Source Files\BehaviourTree\Leafs</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_AllyNeedsHealing.cpp">
+      <Filter>Source Files\BehaviourTree\Leafs</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_Attack.cpp">
+      <Filter>Source Files\BehaviourTree\Leafs</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_Heal.cpp">
+      <Filter>Source Files\BehaviourTree\Leafs</Filter>
+    </ClCompile>
+    <ClCompile Include="Tank.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Damage.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyMob.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_INeedHealing.cpp">
+      <Filter>Source Files\BehaviourTree\Leafs</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_Defend.cpp">
+      <Filter>Source Files\BehaviourTree\Leafs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

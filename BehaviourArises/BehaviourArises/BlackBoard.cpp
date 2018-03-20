@@ -179,3 +179,24 @@ Tile* BlackBoard::GetTile(std::string p_key)
 
 	return m_tiles[p_key];
 }
+
+void BlackBoard::SetBTNodes(std::string p_key, std::vector<BT_Node*> p_nodes)
+{
+	m_BTNodes[p_key] = p_nodes;
+}
+
+bool BlackBoard::HasBTNodes(std::string p_key) const
+{
+	return m_BTNodes.find(p_key) != m_BTNodes.end();
+}
+
+std::vector<BT_Node*> BlackBoard::GetBTNodes(std::string p_key)
+{
+	if(!HasBTNodes(p_key))
+	{
+		std::cout << "Nodes with key " << p_key.c_str() << " not found, returning null\n";
+		return {};
+		
+	}
+	return m_BTNodes[p_key];
+}

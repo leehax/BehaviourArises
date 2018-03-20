@@ -10,13 +10,17 @@ public:
 
 	enum class BT_State{ Null, Success, Failure, Running,};
 
-	virtual BT_State Update() = 0;
+	virtual void Enter() {}
+	virtual void Terminate() {}
+	virtual BT_State Update(std::vector<BT_Node*>& p_openNodes) = 0;
 	virtual void Init(std::shared_ptr<Agent> p_agent, std::shared_ptr<BlackBoard> p_pBB);
 protected:
 	BT_State m_state = BT_State::Null;
 	std::shared_ptr<Agent> m_agent = nullptr;
 	std::shared_ptr<BlackBoard> m_privateBlackBoard = nullptr;
 };
+
+
 
 inline void BT_Node::Init(std::shared_ptr<Agent> p_agent, std::shared_ptr<BlackBoard> p_pBB)
 {

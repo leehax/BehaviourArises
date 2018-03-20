@@ -12,7 +12,7 @@ public:
 	BehaviourTree(const std::shared_ptr<BT_Node> & p_rootNode, const std::shared_ptr<BlackBoard> & p_publicBlackBoard);
 	~BehaviourTree();
 
-	BT_State Update() override;
+	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
 
 	void Init(const std::shared_ptr<BT_Node>& p_rootNode, std::shared_ptr<Agent> p_agent);
 	std::shared_ptr<BlackBoard> GetPrivateBlackBoard();

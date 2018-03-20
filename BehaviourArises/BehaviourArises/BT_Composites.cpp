@@ -38,16 +38,25 @@ void BT_Composite::Init(std::shared_ptr<Agent> p_agent, std::shared_ptr<BlackBoa
 }
 
 
-BT_Node::BT_State BT_Selector::Update()
+BT_Node::BT_State BT_Selector::Update(std::vector<BT_Node*>& p_openNodes)
 {
 	if(!HasChildren())
 	{
 		return BT_State::Success;
 	}
 
+	if(std::find(p_openNodes.begin(),p_openNodes.end(),this)!=p_openNodes.end())
+	{
+	//we are already in the opennodes;
+	}
+	else
+	{
+		p_openNodes.push_back(this);
+	}
+	
 	for(auto c:m_childNodes)
 	{
-		const auto state = c->Update();
+		const auto state = c->Update(p_openNodes);
 
 		if(state != BT_State::Failure) 
 		{
@@ -60,17 +69,67 @@ BT_Node::BT_State BT_Selector::Update()
 }
 
 
-
-BT_Node::BT_State BT_Sequencer::Update()
+BT_Node::BT_State BT_SelectorMemorize::Update(std::vector<BT_Node*>& p_openNodes)
 {
 	if (!HasChildren())
 	{
 		return BT_State::Success;
 	}
 
+	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
+	{
+		//we are already in the opennodes;
+	}
+	else
+	{
+		p_openNodes.push_back(this);
+	}
+
+	for (int i = m_index; i < m_childNodes.size(); i++)
+	{
+		const auto state = m_childNodes[i]->Update(p_openNodes);
+
+		if (state != BT_State::Failure)
+		{
+			if (state == BT_State::Running)
+			{
+				m_index = i;
+			}
+			return state;
+		}
+
+	}
+
+	m_index = 0;
+	return BT_State::Failure;
+}
+
+void BT_SelectorMemorize::Terminate()
+{
+	std::cout << "Terminated a selectormemorize at: " << this << '\n';
+	m_index = 0;
+}
+
+
+BT_Node::BT_State BT_Sequencer::Update(std::vector<BT_Node*>& p_openNodes)
+{
+	if (!HasChildren())
+	{
+		return BT_State::Success;
+	}
+
+	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
+	{
+		//we are already in the opennodes;
+	}
+	else
+	{
+		p_openNodes.push_back(this);
+	}
+
 	for (int i = 0; i < m_childNodes.size(); i++)
 	{
-		const auto state = m_childNodes[i]->Update();
+		const auto state = m_childNodes[i]->Update(p_openNodes);
 
 		if (state != BT_State::Success)
 		{
@@ -82,22 +141,36 @@ BT_Node::BT_State BT_Sequencer::Update()
 	return BT_State::Success;
 }
 
-BT_Node::BT_State BT_SequencerMemorize::Update()
+
+
+BT_Node::BT_State BT_SequencerMemorize::Update(std::vector<BT_Node*>& p_openNodes)
 {
 	if(!HasChildren())
 	{
 		return BT_State::Success;
 	}
-	
+	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
+	{
+		//we are already in the opennodes;
+	}
+	else
+	{
+		p_openNodes.push_back(this);
+	}
+
 	for (int i = m_index; i < m_childNodes.size(); i++)
 	{
-		const auto state = m_childNodes[i]->Update();
+		const auto state = m_childNodes[i]->Update(p_openNodes);
 
 		if (state != BT_State::Success)
 		{
 			if(state==BT_State::Running)
 			{
 				m_index = i;
+			}
+			else
+			{
+				m_index = 0;
 			}
 			return state;
 		}
@@ -107,4 +180,10 @@ BT_Node::BT_State BT_SequencerMemorize::Update()
 	m_index = 0;
 	return BT_State::Success;
 
+}
+
+void BT_SequencerMemorize::Terminate()
+{
+	std::cout << "Terminated a sequencermemorize at: " << this << '\n';
+	m_index = 0;
 }

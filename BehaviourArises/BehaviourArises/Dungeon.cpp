@@ -42,7 +42,6 @@ void Dungeon::Initialise()
 	//	std::cout << "Failed creating first room\n";
 	//	return;
 	//}
-
 	//for (int i = 1; i < m_maxFeatures; i++)
 	//{
 	//	if (!CreateFeature())
@@ -52,8 +51,14 @@ void Dungeon::Initialise()
 	//	}
 	//}
 	LoadMap("../External/map.txt");
-	m_healer = std::make_shared<Healer>(this,GetTile(1, 1));
+	m_worldBlackBoard = std::make_shared<BlackBoard>();
+	m_healer = std::make_shared<Healer>(this,GetTile(1, 1), m_worldBlackBoard);
 	m_healer->CreateBehaviourTree(m_healer);
+
+	m_tank = std::make_shared<Tank>(this, GetTile(2, 3), m_worldBlackBoard);
+	m_tank->CreateBehaviourTree(m_tank);
+
+	m_enemies.push_back(std::make_shared<EnemyMob>(this, GetTile(4, 4)));
 }
 
 void Dungeon::DrawGrid(Uint8 p_r, Uint8 p_g, Uint8 p_b, Uint8 p_a)
@@ -64,6 +69,11 @@ void Dungeon::DrawGrid(Uint8 p_r, Uint8 p_g, Uint8 p_b, Uint8 p_a)
 		t.second->Draw(p_r, p_g, p_b, p_a);
 	}
 	m_healer->Draw();
+	m_tank->Draw();
+	for(auto e:m_enemies)
+	{
+		e->Draw();
+	}
 }
 
 void Dungeon::Update(float p_delta)
@@ -75,11 +85,50 @@ void Dungeon::Update(float p_delta)
 
 	}
 	m_healer->Update(p_delta);
+	m_tank->Update(p_delta);
+	CheckCollisions(m_healer, m_tank);
+	for (auto e : m_enemies)
+	{
+		e->Update(p_delta);
+		CheckCollisions(e, m_healer);
+		CheckCollisions(e, m_tank);
+		CheckCollisions(m_healer, e);
+		CheckCollisions(m_tank, e);
+	}
 }
 
 
 void Dungeon::HandleEvent(SDL_Event& p_ev, SDL_Point p_pos)
 {
+}
+
+void Dungeon::CheckCollisions(std::shared_ptr<Agent> p_first, std::shared_ptr<Agent> p_second)
+{
+	if(p_first->GetCollider().x + p_first->GetCollider().w <= p_second->GetCollider().x ||
+		p_first->GetCollider().x >= p_second->GetCollider().x + p_second->GetCollider().w ||
+		p_first->GetCollider().y + p_first->GetCollider().h <= p_second->GetCollider().y || 
+		p_first->GetCollider().y >= p_second->GetCollider().y + p_second->GetCollider().h)
+	{
+		//p_first->OnCollision(p_second);
+
+	}
+	else
+	{
+		std::cout << p_first->GetName() << " collided with " << p_second->GetName() << '\n';
+	}
+
+	if(p_first->GetSensingAreaCollider().x + p_first->GetSensingAreaCollider().w <= p_second->GetCollider().x ||
+		p_first->GetSensingAreaCollider().x >= p_second->GetCollider().x + p_second->GetCollider().w ||
+		p_first->GetSensingAreaCollider().y + p_first->GetSensingAreaCollider().h <= p_second->GetCollider().y ||
+		p_first->GetSensingAreaCollider().y >= p_second->GetCollider().y + p_second->GetCollider().h)
+	{
+		
+	}
+	else
+	{
+		std::cout << p_first->GetName() << " sensed agent " << p_second->GetName() << '\n';
+		p_first->OnAgentEnteredSenseArea(p_second);
+	}
 }
 
 
@@ -98,8 +147,10 @@ bool Dungeon::LoadMap(std::string p_file)
 			{
 				char type;
 				mapFile >> type;
-				if(GetTile(x,y))
-					GetTile(x, y)->SetType(type);
+			
+					if (GetTile(x, y))
+						GetTile(x, y)->SetType(type);
+				
 			}
 		}
 	}

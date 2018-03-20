@@ -22,21 +22,32 @@ class BT_Selector:
 	public BT_Composite
 {
 public:
-	BT_State Update() override;
+	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
+};
+
+class BT_SelectorMemorize :
+	public BT_Composite
+{
+public:
+	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
+	void Terminate() override;
+private:
+	int m_index = 0;
 };
 
 class BT_Sequencer:
 		public BT_Composite
 {
 public:
-	BT_State Update() override;
+	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
 };
 
 class BT_SequencerMemorize :
 	public BT_Composite
 {
 public:
-	BT_State Update() override;
+	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
+	void Terminate() override;
 private:
 	int m_index = 0;
 };
