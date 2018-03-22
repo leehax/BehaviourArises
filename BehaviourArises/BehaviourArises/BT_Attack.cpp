@@ -21,7 +21,7 @@ BT_Node::BT_State BT_Attack::Update(std::vector<BT_Node*>& p_openNodes)
 	{
 		p_openNodes.push_back(this);
 	}
-
+	m_agent->Attack(m_blackBoard->GetAgent(m_agent->GetName() + "TargetAgent"));
 	std::cout << "Attacking\n";
 	return BT_State::Success;
 }

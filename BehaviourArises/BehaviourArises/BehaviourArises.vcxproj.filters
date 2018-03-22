@@ -174,14 +174,20 @@
     <ClInclude Include="EnemyMob.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Damage.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
     <ClInclude Include="BT_Defend.h">
       <Filter>Header Files\BehaviourTree\Leafs</Filter>
     </ClInclude>
     <ClInclude Include="BT_INeedHealing.h">
       <Filter>Header Files\BehaviourTree\Leafs</Filter>
+    </ClInclude>
+    <ClInclude Include="Ranger.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_AmIInRange.h">
+      <Filter>Header Files\BehaviourTree\Leafs</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_AllyUnderAttack.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -272,9 +278,6 @@
     <ClCompile Include="Tank.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Damage.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="EnemyMob.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
@@ -283,6 +286,15 @@
     </ClCompile>
     <ClCompile Include="BT_Defend.cpp">
       <Filter>Source Files\BehaviourTree\Leafs</Filter>
+    </ClCompile>
+    <ClCompile Include="Ranger.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_AmIInRange.cpp">
+      <Filter>Source Files\BehaviourTree\Leafs</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_AllyUnderAttack.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

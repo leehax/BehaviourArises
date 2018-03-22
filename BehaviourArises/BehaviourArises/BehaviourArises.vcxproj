@@ -155,6 +155,8 @@
     <ClInclude Include="BehaviourTree.h" />
     <ClInclude Include="BlackBoard.h" />
     <ClInclude Include="BT_AllyNeedsHealing.h" />
+    <ClInclude Include="BT_AllyUnderAttack.h" />
+    <ClInclude Include="BT_AmIInRange.h" />
     <ClInclude Include="BT_Attack.h" />
     <ClInclude Include="BT_Composites.h" />
     <ClInclude Include="BT_Decorators.h" />
@@ -167,7 +169,7 @@
     <ClInclude Include="BT_Node.h" />
     <ClInclude Include="BT_SetDestination.h" />
     <ClInclude Include="Config.h" />
-    <ClInclude Include="Damage.h" />
+    <ClInclude Include="Ranger.h" />
     <ClInclude Include="DrawManager.h" />
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="EnemyMob.h" />
@@ -198,6 +200,8 @@
     <ClCompile Include="BehaviourTree.cpp" />
     <ClCompile Include="BlackBoard.cpp" />
     <ClCompile Include="BT_AllyNeedsHealing.cpp" />
+    <ClCompile Include="BT_AllyUnderAttack.cpp" />
+    <ClCompile Include="BT_AmIInRange.cpp" />
     <ClCompile Include="BT_Attack.cpp" />
     <ClCompile Include="BT_Composites.cpp" />
     <ClCompile Include="BT_Decorators.cpp" />
@@ -208,7 +212,7 @@
     <ClCompile Include="BT_Leaf.cpp" />
     <ClCompile Include="BT_Move.cpp" />
     <ClCompile Include="BT_SetDestination.cpp" />
-    <ClCompile Include="Damage.cpp" />
+    <ClCompile Include="Ranger.cpp" />
     <ClCompile Include="DrawManager.cpp" />
     <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="EnemyMob.cpp" />

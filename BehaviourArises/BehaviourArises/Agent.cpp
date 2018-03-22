@@ -62,11 +62,13 @@ bool Agent::MoveToNextTile()
 {
 	if (m_path.size()>1) {
 		
+			m_curTile->SetBlocked(false);
 			m_path.pop_back();
 			Vector2<int> direction; //normalize the x and y component individually, instead of normalizing the entire vector, to ensure proper movement
 			direction.x = (m_path.back()->GetGridPos().x - m_curTile->GetGridPos().x) / std::max(std::abs(m_path.back()->GetGridPos().x - m_curTile->GetGridPos().x), 1);
 			direction.y = (m_path.back()->GetGridPos().y - m_curTile->GetGridPos().y) / std::max(std::abs(m_path.back()->GetGridPos().y - m_curTile->GetGridPos().y), 1);
 			m_curTile = m_world->GetTile(m_curTile->GetGridPos() + direction);
+			m_curTile->SetBlocked(true);
 
 		return true;
 	}
@@ -86,5 +88,10 @@ void Agent::OnAgentEnteredSenseArea(std::shared_ptr<Agent> p_other)
 	else {
 		m_sensedAgents.push_back(p_other);
 	}
+}
+
+void Agent::SetHealth(float p_val)
+{
+	m_currentHealth = p_val;
 }
 

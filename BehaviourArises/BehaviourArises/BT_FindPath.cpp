@@ -23,7 +23,7 @@ BT_Node::BT_State BT_FindPath::Update(std::vector<BT_Node*>& p_openNodes)
 	}
 
 	m_agent->ClearPath();
-	if (m_agent->FindPath(m_blackBoard->GetVector2i(m_agent->GetName() + "TargetLocation")))
+	if (m_agent->FindPath(m_blackBoard->GetVector2i(m_agent->GetName() + "TargetPosition")))
 	{
 		std::cout << "FindPath Success\n";
 		return BT_State::Success;

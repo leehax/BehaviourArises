@@ -24,8 +24,9 @@ BT_Node::BT_State BT_AllyNeedsHealing::Update(std::vector<BT_Node*>& p_openNodes
 
 	if(m_blackBoard->GetInt("TankHealth")<=50)
 	{
-		std::cout << "Ally Needs Healing\n";
-		m_blackBoard->SetVector2i(m_agent->GetName()+"TargetLocation", m_blackBoard->GetVector2i("TankPosition"));
+		std::cout << "Tank Needs Healing\n";
+		//m_blackBoard->SetVector2i(m_agent->GetName()+"TargetLocation", m_blackBoard->GetVector2i("TankPosition"));
+		m_blackBoard->SetVector2i(m_agent->GetName() + "TargetActionPosition", m_blackBoard->GetVector2i("TankPosition"));
 		return BT_State::Success;
 	}
 	return BT_State::Failure;

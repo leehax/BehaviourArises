@@ -15,6 +15,9 @@
 #include "BT_Attack.h"
 #include "BT_Defend.h"
 #include "BT_INeedHealing.h"
+#include "BT_AllyUnderAttack.h"
+#include "BT_AmIInRange.h"
+#include "BT_Decorators.h"
 
 Tank::Tank(IGridMap* p_world, Tile* p_tile, std::shared_ptr<BlackBoard> p_BB)
 {
@@ -26,13 +29,13 @@ Tank::Tank(IGridMap* p_world, Tile* p_tile, std::shared_ptr<BlackBoard> p_BB)
 
 	m_spriteManager = ServiceLocator<SpriteManager>::GetService();
 	m_drawManager = ServiceLocator<DrawManager>::GetService();
-	m_sprite = m_spriteManager->CreateSprite("../External/textures/Healer.png", 0, 0, 32, 32);
+	m_sprite = m_spriteManager->CreateSprite("../External/textures/Tank.png", 0, 0, 32, 32);
 
 	m_world = p_world;
 	m_pathFinding = std::make_shared<AStarPath>(m_world);
 	m_blackBoard = p_BB;
 	m_name = "Tank";
-	m_collider = m_sprite->GetClip();
+	m_collider = { m_curTile->GetWorldPos().x, m_curTile->GetWorldPos().y, m_sprite->GetClip().w, m_sprite->GetClip().h };
 	m_sensingAreaCollider = { m_curTile->GetWorldPos().x - m_visionRange * static_cast<int>(Config::TILE_SIZE), m_curTile->GetWorldPos().y - m_visionRange * static_cast<int>(Config::TILE_SIZE) , (m_visionRange * 2 + 1) * static_cast<int>(Config::TILE_SIZE), (m_visionRange * 2 + 1) * static_cast<int>(Config::TILE_SIZE) };
 }
 
@@ -52,23 +55,53 @@ void Tank::CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent)
 	m_blackBoard->SetVector2i( m_name + "Position", m_curTile->GetGridPos());
 	m_blackBoard->SetInt(m_name + "Health", 100);
 	m_blackBoard->SetVector2i("EscapeLocation", Vector2<int>(20, 20));
-	m_blackBoard->SetVector2i(m_name + "TargetLocation", m_blackBoard->GetVector2i("EscapeLocation"));
+	m_blackBoard->SetVector2i(m_name + "TargetPosition", m_blackBoard->GetVector2i("EscapeLocation"));
 	m_behaviourTree = std::make_shared<BehaviourTree>(m_blackBoard);
 
 	auto lookForEscape = std::make_shared<BT_Sequencer>();
 
 	auto findPath = std::make_shared<BT_FindPath>(m_blackBoard);
-	auto moveToTarget = std::make_shared<BT_Move>(m_blackBoard);
+	auto moveTowards = std::make_shared<BT_Move>(m_blackBoard);
 
-	lookForEscape->AddNodesAsChildren({ findPath,moveToTarget });
-	auto defensiveStance = std::make_shared<BT_Sequencer>();
+	lookForEscape->AddNodesAsChildren({ findPath,moveTowards });
+
+	auto waitForHealing = std::make_shared<BT_Sequencer>();
 	auto defend = std::make_shared<BT_Defend>(m_blackBoard);
 	auto needHealing = std::make_shared<BT_INeedHealing>(m_blackBoard);
 
-	defensiveStance->AddNodesAsChildren({ needHealing,defend });
+	waitForHealing->AddNodesAsChildren({ needHealing,defend });
+
+	auto helpAlly = std::make_shared<BT_Sequencer>();
+	auto inRangeToAttack = std::make_shared < BT_AmIInRange> (m_blackBoard, 1);
+	auto attackInverter = std::make_shared<BT_Inverter>();
+	auto attackMoveSelector = std::make_shared<BT_Selector>();
+	auto moveToAttack = std::make_shared<BT_Sequencer>();
+	auto isAllyUnderAttack = std::make_shared<BT_AllyUnderAttack>(m_blackBoard);
+	auto attack = std::make_shared<BT_Attack>(m_blackBoard);
+
+
+	attackInverter->SetChild(inRangeToAttack);
+	moveToAttack->AddNodesAsChildren({ attackInverter,findPath,moveTowards });
+	attackMoveSelector->AddNodesAsChildren({ moveToAttack,attack });
+	helpAlly->AddNodesAsChildren({ isAllyUnderAttack,attackMoveSelector });
+
+	//Help ally if they are attacked sequence
+	//Is ally under attack?
+	//Is it one or many enemies?
+
+	//One enemy
+	//Move to that enemy
+	//Kill it
+
+	//Many enemies, taunt enemies (aura of 3x3)
+	//Armor up
+
+
+
+
 
 	auto root = std::make_shared<BT_Selector>();
-	root->AddNodesAsChildren({ defensiveStance, lookForEscape });
+	root->AddNodesAsChildren({ helpAlly,waitForHealing, lookForEscape });
 
 	m_behaviourTree->Init(root, p_sharedPtrToThisAgent);
 
@@ -106,4 +139,19 @@ void Tank::Draw()
 
 void Tank::Sense()
 {
+}
+
+void Tank::OnCollision(std::shared_ptr<Agent> p_other)
+{
+}
+
+void Tank::NotColliding(std::shared_ptr<Agent> p_other)
+{
+}
+
+void Tank::Attack(std::weak_ptr<Agent> p_target)
+{
+	
+	auto sptr=p_target.lock();
+	sptr->SetHealth(0);
 }

@@ -31,10 +31,13 @@ public:
 	virtual std::vector<Tile*> GetPath();
 	virtual bool MoveToNextTile();
 	virtual std::string GetName();
-	virtual void OnCollision(std::shared_ptr<Agent> p_other) {}
+	virtual void OnCollision(std::shared_ptr<Agent> p_other) = 0;
+	virtual void NotColliding(std::shared_ptr<Agent> p_other) = 0;
 	virtual void OnAgentEnteredSenseArea(std::shared_ptr<Agent> p_other);
 	virtual SDL_Rect GetCollider(){	return m_collider;	}
 	virtual SDL_Rect GetSensingAreaCollider(){	return m_sensingAreaCollider;	}
+	virtual void Attack(std::weak_ptr<Agent> p_target) = 0;
+	void SetHealth(float p_val);
 protected:
 	std::shared_ptr<BlackBoard> m_blackBoard;
 	std::shared_ptr<BehaviourTree> m_behaviourTree;
@@ -49,5 +52,6 @@ protected:
 	SDL_Rect m_sensingAreaCollider;
 	std::vector<std::shared_ptr<Agent>> m_sensedAgents;
 	std::vector<std::shared_ptr<Agent>> m_sensedEnemies;
+	float m_iFrame = 1.0f;
 };
 

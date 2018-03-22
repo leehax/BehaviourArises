@@ -35,9 +35,9 @@ public:
 	bool HasVector2f(std::string p_key) const;
 	Vector2<float> GetVector2f(std::string p_key);
 
-	void SetAgent(std::string p_key,Agent* p_agent);
+	void SetAgent(std::string p_key,std::weak_ptr<Agent> p_agent);
 	bool HasAgent(std::string p_key) const;
-	Agent* GetAgent(std::string p_key);
+	std::weak_ptr<Agent> GetAgent(std::string p_key);
 	
 	void SetTile(std::string p_key, Tile* p_tile);
 	bool HasTile(std::string p_key) const;
@@ -54,7 +54,7 @@ private:
 	std::map<std::string, bool> m_booleans;
 	std::map<std::string, Vector2<int>> m_vector2is;
 	std::map<std::string, Vector2<float>> m_vector2fs;
-	std::map<std::string, Agent*> m_agents;
+	std::map<std::string, std::weak_ptr<Agent>> m_agents;
 	std::map<std::string, Tile*> m_tiles;
 	std::map<std::string, std::vector<BT_Node*>> m_BTNodes;
 };

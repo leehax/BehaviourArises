@@ -22,7 +22,7 @@ BT_Node::BT_State BT_SetDestination::Update(std::vector<BT_Node*>& p_openNodes)
 		p_openNodes.push_back(this);
 	}
 
-	m_blackBoard->SetVector2i("TargetLocation", m_blackBoard->GetVector2i("WoundedAlly"));
+	m_blackBoard->SetVector2i("TargetPosition", m_blackBoard->GetVector2i("WoundedAlly"));
 	std::cout << "SetDestination Success\n";
 	return BT_State::Success;
 }
