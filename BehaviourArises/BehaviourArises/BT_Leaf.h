@@ -1,7 +1,6 @@
 #pragma once
 #include "BT_Node.h"
 #include <string>
-class BlackBoard;
 class BT_Leaf :
 	public BT_Node
 {

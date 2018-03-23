@@ -187,6 +187,12 @@
       <Filter>Header Files\BehaviourTree\Leafs</Filter>
     </ClInclude>
     <ClInclude Include="BT_AllyUnderAttack.h">
+      <Filter>Header Files\BehaviourTree\Leafs</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_SetTargetAgent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_MoveAway.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -294,6 +300,12 @@
       <Filter>Source Files\BehaviourTree\Leafs</Filter>
     </ClCompile>
     <ClCompile Include="BT_AllyUnderAttack.cpp">
+      <Filter>Source Files\BehaviourTree\Leafs</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_SetTargetAgent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_MoveAway.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

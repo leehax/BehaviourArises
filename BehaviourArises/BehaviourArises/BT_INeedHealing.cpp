@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "BT_INeedHealing.h"
-
+#include "Agent.h"
 
 BT_INeedHealing::BT_INeedHealing(std::shared_ptr<BlackBoard> p_BB) : BT_Leaf(p_BB)
 {

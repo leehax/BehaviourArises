@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "BT_AllyNeedsHealing.h"
-
+#include "Agent.h"
 
 BT_AllyNeedsHealing::BT_AllyNeedsHealing(std::shared_ptr<BlackBoard> p_BB) :BT_Leaf(p_BB)
 {

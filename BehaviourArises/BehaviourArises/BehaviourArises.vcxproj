@@ -166,8 +166,10 @@
     <ClInclude Include="BT_INeedHealing.h" />
     <ClInclude Include="BT_Leaf.h" />
     <ClInclude Include="BT_Move.h" />
+    <ClInclude Include="BT_MoveAway.h" />
     <ClInclude Include="BT_Node.h" />
     <ClInclude Include="BT_SetDestination.h" />
+    <ClInclude Include="BT_SetTargetAgent.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Ranger.h" />
     <ClInclude Include="DrawManager.h" />
@@ -211,7 +213,9 @@
     <ClCompile Include="BT_INeedHealing.cpp" />
     <ClCompile Include="BT_Leaf.cpp" />
     <ClCompile Include="BT_Move.cpp" />
+    <ClCompile Include="BT_MoveAway.cpp" />
     <ClCompile Include="BT_SetDestination.cpp" />
+    <ClCompile Include="BT_SetTargetAgent.cpp" />
     <ClCompile Include="Ranger.cpp" />
     <ClCompile Include="DrawManager.cpp" />
     <ClCompile Include="Dungeon.cpp" />

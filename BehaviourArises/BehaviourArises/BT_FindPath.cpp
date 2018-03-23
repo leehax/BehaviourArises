@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "BT_FindPath.h"
-
+#include "Agent.h"
 
 BT_FindPath::BT_FindPath(std::shared_ptr<BlackBoard> p_BB):BT_Leaf(p_BB)
 {
@@ -25,10 +25,10 @@ BT_Node::BT_State BT_FindPath::Update(std::vector<BT_Node*>& p_openNodes)
 	m_agent->ClearPath();
 	if (m_agent->FindPath(m_blackBoard->GetVector2i(m_agent->GetName() + "TargetPosition")))
 	{
-		std::cout << "FindPath Success\n";
+		std::cout << m_agent->GetName()+" FindPath Success\n";
 		return BT_State::Success;
 	}
 
-	std::cout << "FindPath Fail\n";
+	std::cout << m_agent->GetName() + "FindPath Fail\n";
 	return BT_State::Failure;
 }

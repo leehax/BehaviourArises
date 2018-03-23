@@ -31,28 +31,33 @@ EnemyMob::EnemyMob(IGridMap* p_world, Tile* p_tile)
 
 EnemyMob::~EnemyMob()
 {
+	m_curTile->SetBlocked(false);
 }
 
 void EnemyMob::Update(float p_delta)
 {
-	Sense();
-	ClearPath();
-	FindPath(m_targetTile);
-	MoveToNextTile();
-	m_sensingAreaCollider.x = m_curTile->GetWorldPos().x - m_visionRange * static_cast<int>(Config::TILE_SIZE);
-	m_sensingAreaCollider.y = m_curTile->GetWorldPos().y - m_visionRange * static_cast<int>(Config::TILE_SIZE);
-	m_collider.x = m_curTile->GetWorldPos().x - static_cast<int>(Config::HALF_TILE) / 2;
-	m_collider.y = m_curTile->GetWorldPos().y - static_cast<int>(Config::HALF_TILE) / 2;
-	m_curTile->SetBlocked(true);
+	m_behaviourTreeTickTime -= p_delta;
+	if (m_behaviourTreeTickTime <= 0) {
+		Sense();
+		ClearPath();
+		FindPath(m_targetTile);
+		MoveToNextTile();
+		m_sensingAreaCollider.x = m_curTile->GetWorldPos().x - m_visionRange * static_cast<int>(Config::TILE_SIZE);
+		m_sensingAreaCollider.y = m_curTile->GetWorldPos().y - m_visionRange * static_cast<int>(Config::TILE_SIZE);
+		m_collider.x = m_curTile->GetWorldPos().x - static_cast<int>(Config::HALF_TILE) / 2;
+		m_collider.y = m_curTile->GetWorldPos().y - static_cast<int>(Config::HALF_TILE) / 2;
+		m_behaviourTreeTickTime = 1.f;
+	}
+	
 }
 
 void EnemyMob::Draw()
 {
 	m_drawManager->Draw(m_sprite, m_curTile->GetWorldPos().x, m_curTile->GetWorldPos().y, 1);
-	m_drawManager->DrawRect(m_sensingAreaCollider, 255, 0, 0, 0);
-	m_drawManager->DrawRect(m_collider, 255, 0, 0, 0);
-	m_pathFinding->Draw();
-	m_drawManager->DrawRect(*m_targetTile->GetRect(), 0, 255, 255,0);
+	//m_drawManager->DrawRect(m_sensingAreaCollider, 255, 0, 0, 0);
+//m_drawManager->DrawRect(m_collider, 255, 0, 0, 0);
+//	m_pathFinding->Draw();
+//	m_drawManager->DrawRect(*m_targetTile->GetRect(), 0, 255, 255,0);
 }
 
 void EnemyMob::Sense()
@@ -61,9 +66,10 @@ void EnemyMob::Sense()
 	if (!m_sensedAgents.empty()) {
 		for (auto a : m_sensedAgents)
 		{
-			if (a->GetName() != "Bat")
+			auto sptr = a.lock();
+			if (sptr->GetName() != "Bat")
 			{
-				sensedAgentPositions.push_back(a->GetCurrentTile()->GetGridPos());
+				sensedAgentPositions.push_back(sptr->GetCurrentTile()->GetGridPos());
 				
 
 			}
@@ -89,11 +95,11 @@ void EnemyMob::Sense()
 	sensedAgentPositions.clear();
 }
 
-void EnemyMob::OnCollision(std::shared_ptr<Agent> p_other)
+void EnemyMob::OnCollision(std::weak_ptr<Agent> p_other)
 {
 }
 
-void EnemyMob::NotColliding(std::shared_ptr<Agent> p_other)
+void EnemyMob::NotColliding(std::weak_ptr<Agent> p_other)
 {
 }
 

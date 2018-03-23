@@ -2,7 +2,10 @@
 #include <map>
 #include "Math.h"
 #include <memory>
-#include "Agent.h"
+#include <vector>
+class Agent;
+class Tile;
+class BT_Node;
 
 class BlackBoard
 {

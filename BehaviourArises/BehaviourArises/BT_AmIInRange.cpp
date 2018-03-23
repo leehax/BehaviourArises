@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "BT_AmIInRange.h"
-
+#include "Agent.h"
 
 BT_AmIInRange::BT_AmIInRange(std::shared_ptr<BlackBoard> p_BB, int p_rangeToCheck) :BT_Leaf(p_BB)
 {

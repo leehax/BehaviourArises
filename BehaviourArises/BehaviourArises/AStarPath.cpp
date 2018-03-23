@@ -66,7 +66,7 @@ std::vector< Tile* > AStarPath::RecursivePathFinding()
 		{
 			
 			bool nodeInOpenOrClosedList = std::find(m_openNodes.begin(), m_openNodes.end(), a) != m_openNodes.end() || std::find(m_closedNodes.begin(), m_closedNodes.end(), a) != m_closedNodes.end();
-			if (a->m_tile->IsBlocked() == false && !nodeInOpenOrClosedList)
+			if ((a->m_tile->IsBlocked() == false/* ||a==m_goalNode*/) && !nodeInOpenOrClosedList)
 			{
 
 				a->m_parentNode = m_currentNode;

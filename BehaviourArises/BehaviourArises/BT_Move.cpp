@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BT_Move.h"
 #include "Tile.h"
-
+#include "Agent.h"
 BT_Move::BT_Move(std::shared_ptr<BlackBoard> p_BB):BT_Leaf(p_BB)
 {
 }

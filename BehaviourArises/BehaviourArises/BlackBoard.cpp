@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BlackBoard.h"
 #include <iostream>
-
+#include "Agent.h"
 
 BlackBoard::BlackBoard()
 {

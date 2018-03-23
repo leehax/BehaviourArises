@@ -40,7 +40,7 @@ bool Agent::FindPath(Tile* p_targetTile)
 bool Agent::FindPath(Vector2<int> p_targetCoord)
 {
 	m_path = m_pathFinding->FindPath(m_curTile, m_world->GetTile(p_targetCoord));
-	if(!m_path.empty())
+	if(m_path.size()>1 ) //a valid path requires at least two tiles, the start and the end
 	{
 		return true;
 	
@@ -62,13 +62,13 @@ bool Agent::MoveToNextTile()
 {
 	if (m_path.size()>1) {
 		
-			m_curTile->SetBlocked(false);
+			//m_curTile->SetBlocked(false);
 			m_path.pop_back();
 			Vector2<int> direction; //normalize the x and y component individually, instead of normalizing the entire vector, to ensure proper movement
 			direction.x = (m_path.back()->GetGridPos().x - m_curTile->GetGridPos().x) / std::max(std::abs(m_path.back()->GetGridPos().x - m_curTile->GetGridPos().x), 1);
 			direction.y = (m_path.back()->GetGridPos().y - m_curTile->GetGridPos().y) / std::max(std::abs(m_path.back()->GetGridPos().y - m_curTile->GetGridPos().y), 1);
 			m_curTile = m_world->GetTile(m_curTile->GetGridPos() + direction);
-			m_curTile->SetBlocked(true);
+		//	m_curTile->SetBlocked(true);
 
 		return true;
 	}
@@ -80,10 +80,22 @@ std::string Agent::GetName()
 	return m_name;
 }
 
-void Agent::OnAgentEnteredSenseArea(std::shared_ptr<Agent> p_other)
+void Agent::OnAgentEnteredSenseArea(std::weak_ptr<Agent> p_other)
 {
-	if(std::find(m_sensedAgents.begin(),m_sensedAgents.end(),p_other)!=m_sensedAgents.end())
-	{
+	
+	auto sptr = p_other.lock();
+
+	auto it= std::find_if(m_sensedAgents.begin(), m_sensedAgents.end(),
+		[&sptr](std::weak_ptr<Agent> a){
+		auto s = a.lock();
+		if (s) {
+			return s == sptr;
+		}
+		return false;
+	});
+	
+	if(it!=m_sensedAgents.end()){
+		
 	}
 	else {
 		m_sensedAgents.push_back(p_other);

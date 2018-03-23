@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "BT_Attack.h"
-
+#include "Agent.h"
 
 BT_Attack::BT_Attack(std::shared_ptr<BlackBoard> p_BB) :BT_Leaf(p_BB)
 {
