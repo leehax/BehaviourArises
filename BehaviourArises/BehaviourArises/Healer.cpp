@@ -8,6 +8,10 @@
 #include "AStarPath.h"
 #include "BlackBoard.h"
 #include <iostream>
+#include "BT_Composites.h"
+#include "BT_Decorators.h"
+#include "BT_Leaf.h"
+#include "BT_Node.h"
 #include "BT_SetDestination.h"
 #include "BT_FindPath.h"
 #include "BT_Move.h"
@@ -18,6 +22,7 @@
 #include "BT_AllyUnderAttack.h"
 #include "BT_MoveAway.h"
 #include "BT_SetTargetAgent.h"
+#include "BT_IsEnemyNear.h"
 // MoveTo(Agent*, "targetIdentifier")
 /*
    Run()
@@ -48,6 +53,8 @@ Healer::Healer(IGridMap* p_world, Tile* p_tile, std::shared_ptr<BlackBoard> p_BB
 	m_pathFinding = std::make_shared<AStarPath>(m_world);
 	m_blackBoard = p_BB;
 	m_name = "Healer";
+	m_blackBoard->SetVector2i(m_name + "Position", m_curTile->GetGridPos());
+	m_blackBoard->SetInt(m_name + "Health", 100);
 	m_collider = { m_curTile->GetWorldPos().x, m_curTile->GetWorldPos().y, m_sprite->GetClip().w, m_sprite->GetClip().h };
 	m_sensingAreaCollider = { m_curTile->GetWorldPos().x - m_visionRange*static_cast<int>(Config::TILE_SIZE), m_curTile->GetWorldPos().y - m_visionRange * static_cast<int>(Config::TILE_SIZE) , (m_visionRange * 2 + 1) * static_cast<int>(Config::TILE_SIZE), (m_visionRange * 2+1) * static_cast<int>(Config::TILE_SIZE) };
 }
@@ -59,51 +66,71 @@ Healer::~Healer()
 
 void Healer::CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent)
 {
-
-
-	m_blackBoard->SetVector2i( m_name + "Position", m_curTile->GetGridPos());
+	//healer should have the following behaviors
+	//heal ally
+	//flee
+	//follow the leader
 	m_behaviourTree = std::make_unique<BehaviourTree>(m_blackBoard);
 	
 	
 	auto flee = std::make_shared<BT_Sequencer>();
-	auto amIUnderAttack = std::make_shared<BT_AllyUnderAttack>(m_blackBoard, m_name);
-	auto moveAway = std::make_shared<BT_MoveAway>(m_blackBoard, m_blackBoard->GetVector2i("EnemyAttacking" + m_name + "Position"));
 
-	
-	auto healAlly = std::make_shared<BT_Sequencer>();
-	auto inRangeToheal = std::make_shared<BT_AmIInRange>(m_blackBoard, 2);
-	auto rangeInverter = std::make_shared<BT_Inverter>();
-	auto healAllySelector = std::make_shared<BT_Selector>();
-	auto moveToHeal = std::make_shared<BT_Sequencer>();
-
-
-	auto isAllyWounded = std::make_shared<BT_AllyNeedsHealing>(m_blackBoard);
-	auto findPath = std::make_shared<BT_FindPath>(m_blackBoard);
+	auto isEnemyNear = std::make_shared<BT_IsEnemyNear>(m_blackBoard, 2);
+	auto findFleeDirection = std::make_shared<BT_MoveAway>(m_blackBoard, m_blackBoard->GetVector2i(m_name+"SpottedEnemyPosition"));
 	auto moveTowards = std::make_shared<BT_Move>(m_blackBoard);
-	auto heal = std::make_shared<BT_Heal>(m_blackBoard);
-
-	auto setTargetToTank = std::make_shared<BT_SetTargetAgent>(m_blackBoard, "Tank");
 	
+
+	flee->AddNodesAsChildren({ isEnemyNear,findFleeDirection,moveTowards });
+
 	auto followTheLeader = std::make_shared<BT_Sequencer>();
 
+	auto setTargetToTank = std::make_shared<BT_SetTargetAgent>(m_blackBoard, "Tank");
+	auto findPath = std::make_shared<BT_FindPath>(m_blackBoard);
 
-	//healer should have the following behaviors
-	//heal ally
-	//hide behind allies
-	//flee
-	//fight
-	//follow the leader
-
-	flee->AddNodesAsChildren({ amIUnderAttack,moveAway,moveTowards });
 	followTheLeader->AddNodesAsChildren({ setTargetToTank, findPath, moveTowards });
 
-	rangeInverter->SetChild(inRangeToheal);
-	moveToHeal->AddNodesAsChildren({ rangeInverter,findPath,moveTowards });
-	healAllySelector->AddNodesAsChildren({ moveToHeal, heal });
-	healAlly->AddNodesAsChildren({ isAllyWounded, healAllySelector });
 
+	auto healTank = std::make_shared<BT_Sequencer>();
+	auto isTankWounded = std::make_shared<BT_AllyNeedsHealing>(m_blackBoard,"Tank");
+	auto healTankIfInRange = std::make_shared<BT_Selector>();
+	auto moveToHealTank = std::make_shared<BT_Sequencer>();
+	auto rangeToTankInverter = std::make_shared<BT_Inverter>();
+	auto inRangeTohealTank = std::make_shared<BT_AmIInRange>(m_blackBoard, 2, "TankPosition");
+	auto healT = std::make_shared<BT_Heal>(m_blackBoard, "Tank");
+
+	
+
+	rangeToTankInverter->SetChild(inRangeTohealTank);
+	moveToHealTank->AddNodesAsChildren({ rangeToTankInverter,setTargetToTank, findPath,moveTowards });
+	healTankIfInRange->AddNodesAsChildren({ moveToHealTank, healT });
+
+	healTank->AddNodesAsChildren({ isTankWounded, healTankIfInRange });
+
+	auto healSelf = std::make_shared<BT_Sequencer>();
+	auto amIWounded = std::make_shared<BT_AllyNeedsHealing>(m_blackBoard, "Healer");
+	auto amISafe = std::make_shared<BT_Inverter>();
+	auto healS = std::make_shared<BT_Heal>(m_blackBoard, "Healer");
+
+	amISafe->SetChild(isEnemyNear);
+	healSelf->AddNodesAsChildren({ amIWounded,amISafe,healS });
+
+	auto healRanger = std::make_shared<BT_Sequencer>();
+	auto isRangerWounded = std::make_shared<BT_AllyNeedsHealing>(m_blackBoard, "Ranger");
+	auto healRangerIfInRange = std::make_shared<BT_Selector>();
+	auto moveToHealRanger = std::make_shared<BT_Sequencer>();
+	auto rangeToRangerInverter = std::make_shared<BT_Inverter>();
+	auto setTargetToRanger = std::make_shared<BT_SetTargetAgent>(m_blackBoard, "Ranger");
+	auto inRangeToHealRanger = std::make_shared<BT_AmIInRange>(m_blackBoard, 2, "RangerPosition");
+	auto healR = std::make_shared<BT_Heal>(m_blackBoard, "Ranger");
 	auto root = std::make_shared<BT_Selector>();
-	root->AddNodesAsChildren({ flee,healAlly, followTheLeader });
+
+	rangeToRangerInverter->SetChild(inRangeToHealRanger);
+	moveToHealRanger->AddNodesAsChildren({ rangeToRangerInverter,setTargetToRanger,findPath,moveTowards });
+	healRangerIfInRange->AddNodesAsChildren({ moveToHealRanger,healR });
+
+	healRanger->AddNodesAsChildren({ isRangerWounded, healRangerIfInRange });
+
+	root->AddNodesAsChildren({ healTank, healSelf, flee, healRanger, followTheLeader });
 
 	m_behaviourTree->Init(root, p_sharedPtrToThisAgent);
 
@@ -120,8 +147,7 @@ void Healer::Update(float p_delta)
 		Sense();
 		m_blackBoard->SetVector2i(m_name + "Position", m_curTile->GetGridPos());
 		//m_blackBoard->SetVector2i(m_name + "TargetPosition", m_blackBoard->GetVector2i("TankPosition"));
-		std::vector<BT_Node*> foo; //TODO: fix this, creating an empty vector because too lazy to refactor the behavior tree class
-		m_behaviourTree->Update(foo);
+		m_behaviourTree->Update();
 		m_sensingAreaCollider.x = m_curTile->GetWorldPos().x - m_visionRange * static_cast<int>(Config::TILE_SIZE);
 		m_sensingAreaCollider.y = m_curTile->GetWorldPos().y - m_visionRange * static_cast<int>(Config::TILE_SIZE);
 		m_collider.x = m_curTile->GetWorldPos().x;
@@ -143,25 +169,12 @@ void Healer::Draw()
 	m_drawManager->Draw(m_sprite, m_curTile->GetWorldPos().x, m_curTile->GetWorldPos().y ,1);
 	//m_pathFinding->Draw();
 	//m_drawManager->DrawRect(m_sensingAreaCollider, 255, 0, 0, 0);
-	//m_drawManager->DrawRect(m_collider, 0,0,255, 0);
+	m_drawManager->DrawRect(m_collider, 0,0,255, 0);
+	m_drawManager->DrawLine(GetWorldPos().x, GetWorldPos().y, GetWorldPos().x + m_blackBoard->GetInt(m_name + "Health") / 3, GetWorldPos().y, 0, 255, 0, 255);
 }
 
 void Healer::Sense()
 {
-	if (!m_sensedAgents.empty()) {
-		for (auto a : m_sensedAgents)
-		{
-			auto sptr = a.lock();
-			if (sptr) {
-				if (sptr->GetName() == "Bat")
-				{
-					m_sensedEnemies.push_back(sptr);
-
-				}
-			}
-		}
-	}
-
 }
 
 void Healer::OnCollision(std::weak_ptr<Agent> p_other)
@@ -169,6 +182,7 @@ void Healer::OnCollision(std::weak_ptr<Agent> p_other)
 	auto sptr = p_other.lock();
 	if(sptr->GetName()=="Bat" && m_iFrame<=0)
 	{
+		m_blackBoard->SetInt(m_name + "Health", m_blackBoard->GetInt(m_name + "Health") - 5);
 		m_blackBoard->SetBool(m_name + "UnderAttack", true);
 		m_blackBoard->SetAgent("EnemyAttacking" + m_name, sptr);
 		m_blackBoard->SetVector2i("EnemyAttacking" + m_name + "Position", sptr->GetGridPos());

@@ -12,14 +12,12 @@ BT_AllyUnderAttack::~BT_AllyUnderAttack()
 {
 }
 
-BT_Node::BT_State BT_AllyUnderAttack::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_AllyUnderAttack::Update()
 {
 	if(m_blackBoard->GetBool(m_allyName+"UnderAttack"))
 	{ 
 		std::cout << m_allyName+" is under attack\n";
-		//m_blackBoard->SetVector2i(m_agent->GetName() + "TargetPosition", m_blackBoard->GetVector2i("EnemyAttackingHealerPosition"));
-		m_blackBoard->SetVector2i(m_agent->GetName() + "TargetActionPosition", m_blackBoard->GetVector2i("EnemyAttackingHealerPosition"));
-		//m_blackBoard->SetAgent(m_agent->GetName() + "TargetAgent",m_blackBoard->GetAgent("EnemyAttackingHealer"));
+	//	m_blackBoard->SetVector2i(m_agent->GetName() + "TargetEnemy", m_blackBoard->GetVector2i("EnemyAttacking"+m_allyName+"Position"));
 		return BT_State::Success;
 	}
 	return BT_State::Failure;

@@ -38,7 +38,10 @@ public:
 	virtual SDL_Rect GetCollider(){	return m_collider;	}
 	virtual SDL_Rect GetSensingAreaCollider(){	return m_sensingAreaCollider;	}
 	virtual void Attack(std::weak_ptr<Agent> p_target) = 0;
-	void SetHealth(float p_val);
+	virtual void SetHealth(float p_val);
+	virtual void ChangeHealth(float p_val);
+	virtual IGridMap* GetWorld() { return m_world; };
+	virtual int GetVisionRange() { return m_visionRange; }
 protected:
 	std::shared_ptr<BlackBoard> m_blackBoard;
 	std::unique_ptr<BehaviourTree> m_behaviourTree = nullptr;

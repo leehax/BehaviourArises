@@ -1,12 +1,7 @@
 #pragma once
 #include "Agent.h"
-#include "BT_Composites.h"
-#include "BT_Decorators.h"
-#include "BT_Leaf.h"
-#include "BT_Node.h"
 
 
-class IGridMap;
 
 class Healer :
 	public Agent

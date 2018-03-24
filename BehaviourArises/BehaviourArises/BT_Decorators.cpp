@@ -30,18 +30,10 @@ void BT_Decorator::Init(std::shared_ptr<Agent> p_agent, std::shared_ptr<BlackBoa
 
 
 
-BT_Node::BT_State BT_Inverter::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_Inverter::Update()
 {
-	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
-	{
-		//we are already in the opennodes;
-	}
-	else
-	{
-		p_openNodes.push_back(this);
-	}
 
-	auto state = GetChild()->Update(p_openNodes);
+	auto state = GetChild()->Update();
 
 	if (state == BT_State::Success) 
 	{
@@ -59,22 +51,15 @@ BT_Repeater::BT_Repeater(unsigned p_repeatLimit)
 {
 }
 
-BT_Node::BT_State BT_Repeater::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_Repeater::Update()
 {
-	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
-	{
-		//we are already in the opennodes;
-	}
-	else
-	{
-		p_openNodes.push_back(this);
-	}
+	
 
 	if(m_repeatLimit==0)
 	{
 		while (true)
 		{
-			GetChild()->Update(p_openNodes);
+			GetChild()->Update();
 		}
 
 	}
@@ -82,73 +67,43 @@ BT_Node::BT_State BT_Repeater::Update(std::vector<BT_Node*>& p_openNodes)
 	{
 		for(int i=0; i<m_repeatLimit; i++)
 		{
-			GetChild()->Update(p_openNodes);
+			GetChild()->Update();
 		}
-		return GetChild()->Update(p_openNodes);
+		return GetChild()->Update();
 	}
 }
 
-BT_Node::BT_State BT_RepeaterFail::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_RepeaterFail::Update()
 {
-	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
-	{
-		//we are already in the opennodes;
-	}
-	else
-	{
-		p_openNodes.push_back(this);
-	}
 
-	while(GetChild()->Update(p_openNodes)!=BT_State::Failure)
+
+	while(GetChild()->Update()!=BT_State::Failure)
 	{
 	}
 	return BT_State::Success;
 }
 
-BT_Node::BT_State BT_RepeaterSuccess::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_RepeaterSuccess::Update()
 {
-	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
-	{
-		//we are already in the opennodes;
-	}
-	else
-	{
-		p_openNodes.push_back(this);
-	}
+	
 
-	while(GetChild()->Update(p_openNodes)!=BT_State::Success)
+	while(GetChild()->Update()!=BT_State::Success)
 	{
 		
 	}
 	return BT_State::Success;
 }
 
-BT_Node::BT_State BT_Succeeder::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_Succeeder::Update()
 {
-	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
-	{
-		//we are already in the opennodes;
-	}
-	else
-	{
-		p_openNodes.push_back(this);
-	}
 
-	GetChild()->Update(p_openNodes);
+	GetChild()->Update();
 	return BT_State::Success;
 }
 
-BT_Node::BT_State BT_Failer::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_Failer::Update()
 {
-	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
-	{
-		//we are already in the opennodes;
-	}
-	else
-	{
-		p_openNodes.push_back(this);
-	}
-
-	GetChild()->Update(p_openNodes);
+	
+	GetChild()->Update();
 	return BT_State::Failure;
 }

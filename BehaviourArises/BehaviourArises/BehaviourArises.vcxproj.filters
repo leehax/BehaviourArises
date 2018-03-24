@@ -190,10 +190,13 @@
       <Filter>Header Files\BehaviourTree\Leafs</Filter>
     </ClInclude>
     <ClInclude Include="BT_SetTargetAgent.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\BehaviourTree\Leafs</Filter>
+    </ClInclude>
+    <ClInclude Include="BT_IsEnemyNear.h">
+      <Filter>Header Files\BehaviourTree\Leafs</Filter>
     </ClInclude>
     <ClInclude Include="BT_MoveAway.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\BehaviourTree\Leafs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -302,11 +305,14 @@
     <ClCompile Include="BT_AllyUnderAttack.cpp">
       <Filter>Source Files\BehaviourTree\Leafs</Filter>
     </ClCompile>
-    <ClCompile Include="BT_SetTargetAgent.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="BT_IsEnemyNear.cpp">
+      <Filter>Source Files\BehaviourTree\Leafs</Filter>
     </ClCompile>
     <ClCompile Include="BT_MoveAway.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\BehaviourTree\Leafs</Filter>
+    </ClCompile>
+    <ClCompile Include="BT_SetTargetAgent.cpp">
+      <Filter>Source Files\BehaviourTree\Leafs</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

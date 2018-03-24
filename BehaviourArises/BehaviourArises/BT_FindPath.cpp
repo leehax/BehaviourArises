@@ -11,17 +11,9 @@ BT_FindPath::~BT_FindPath()
 {
 }
 
-BT_Node::BT_State BT_FindPath::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_FindPath::Update()
 {
-	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
-	{
-		//we are already in the opennodes;
-	}
-	else
-	{
-		p_openNodes.push_back(this);
-	}
-
+	
 	m_agent->ClearPath();
 	if (m_agent->FindPath(m_blackBoard->GetVector2i(m_agent->GetName() + "TargetPosition")))
 	{

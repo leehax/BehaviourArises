@@ -10,6 +10,7 @@
 #include "BT_Decorators.h"
 #include <ctime>
 
+
 Dungeon::Dungeon()
 {
 
@@ -58,12 +59,29 @@ void Dungeon::Initialise()
 	m_tank = std::make_shared<Tank>(this, GetTile(15, 3), m_worldBlackBoard);
 	m_tank->CreateBehaviourTree(m_tank);
 
+	m_ranger = std::make_shared<Ranger>(this, GetTile(4, 4), m_worldBlackBoard);
+	m_ranger->CreateBehaviourTree(m_ranger);
+
 	m_worldBlackBoard->SetAgent("Tank", m_tank);
 	m_worldBlackBoard->SetAgent("Healer", m_healer);
+	m_worldBlackBoard->SetAgent("Ranger", m_ranger);
+
+	m_enemySpawnPositions.push_back(GetTile(11, 0));
+	m_enemySpawnPositions.push_back(GetTile(12, 0));
+	m_enemySpawnPositions.push_back(GetTile(0, 11));
+	m_enemySpawnPositions.push_back(GetTile(0, 12));
+	m_enemySpawnPositions.push_back(GetTile(23, 11));
+	m_enemySpawnPositions.push_back(GetTile(23, 12));
+	m_enemySpawnPositions.push_back(GetTile(11, 23));
+	m_enemySpawnPositions.push_back(GetTile(12, 23));
+	for(auto s:m_enemySpawnPositions)
+	{
+		s->SetBlocked(true);
+	}
 
 	m_enemies.push_back(std::make_unique<EnemyMob>(this, GetTile(1, 4)));
 	m_enemies.push_back(std::make_unique<EnemyMob>(this, GetTile(4, 5)));
-	m_enemies.push_back(std::make_unique<EnemyMob>(this, GetTile(11, 7)));
+	m_enemies.push_back(std::make_unique<EnemyMob>(this, GetTile(13, 7)));
 	m_enemies.push_back(std::make_unique<EnemyMob>(this, GetTile(18, 17)));
 
 }
@@ -77,14 +95,22 @@ void Dungeon::DrawGrid(Uint8 p_r, Uint8 p_g, Uint8 p_b, Uint8 p_a)
 	}
 	m_healer->Draw();
 	m_tank->Draw();
+	m_ranger->Draw();
 	for(auto e:m_enemies)
 	{
 		e->Draw();
 	}
+
 }
 
 void Dungeon::Update(float p_delta)
 {
+
+	m_enemySpawnTimer -= p_delta;
+	if(m_enemySpawnTimer<=0 && m_enemies.size()<=m_maxEnemies)
+	{
+		SpawnEnemy();
+	}
 	for (auto t : m_tiles)
 	{
 
@@ -93,22 +119,18 @@ void Dungeon::Update(float p_delta)
 	}
 	m_tank->Update(p_delta);
 	m_healer->Update(p_delta);
+	m_ranger->Update(p_delta);
 	
-	CheckCollisions(m_healer, m_tank);
-	CheckSensingCollisions(m_healer, m_tank);
-	CheckSensingCollisions(m_tank, m_healer);
 	for (auto e : m_enemies)
 	{
 		e->Update(p_delta);
-		CheckCollisions(e, m_healer);
-		CheckCollisions(e, m_tank);
 		CheckCollisions(m_healer, e);
 		CheckCollisions(m_tank, e);
+		CheckCollisions(m_ranger, e);
 
 		CheckSensingCollisions(e, m_healer);
 		CheckSensingCollisions(e, m_tank);
-		CheckSensingCollisions(m_healer, e);
-		CheckSensingCollisions(m_tank, e);
+		CheckSensingCollisions(e, m_ranger);
 	
 	}
 	
@@ -128,6 +150,7 @@ bool Dungeon::CheckCollisions(std::weak_ptr<Agent> p_first, std::weak_ptr<Agent>
 {
 	auto sptrFirst = p_first.lock();
 	auto sptrSecond = p_second.lock();
+
 		if (sptrFirst->GetCollider().x + sptrFirst->GetCollider().w <= sptrSecond->GetCollider().x ||
 			sptrFirst->GetCollider().x >= sptrSecond->GetCollider().x + sptrSecond->GetCollider().w ||
 			sptrFirst->GetCollider().y + sptrFirst->GetCollider().h <= sptrSecond->GetCollider().y ||
@@ -167,6 +190,37 @@ bool Dungeon::CheckSensingCollisions(std::weak_ptr<Agent> p_first, std::weak_ptr
 			return true;
 		}
 
+}
+
+std::weak_ptr<EnemyMob> Dungeon::ClosestEnemy(Vector2<int> p_curPos)
+{
+	int maxDist = INT_MAX;
+	int index = -1;
+
+	for(int i=0; i<m_enemies.size();i++)
+	{
+		int curDist = Manhattan(p_curPos, m_enemies[i]->GetGridPos());
+		if (curDist<=maxDist)
+		{
+			maxDist = curDist;
+			index = i;
+		}
+	}
+
+	if(index>=0)
+	{
+		return m_enemies[index];
+	}
+
+	return std::weak_ptr<EnemyMob>(); //empty weak_ptr
+}
+
+void Dungeon::SpawnEnemy()
+{
+	int rand=RandomInt(m_enemySpawnPositions.size());
+
+	m_enemies.push_back(std::make_unique<EnemyMob>(this, m_enemySpawnPositions[rand]));
+	m_enemySpawnTimer = 3.f;
 }
 
 

@@ -7,6 +7,7 @@
 #include "Tile.h"
 #include "BlackBoard.h"
 #include <algorithm>
+#include "Dungeon.h"
 
 EnemyMob::EnemyMob(IGridMap* p_world, Tile* p_tile)
 {
@@ -40,13 +41,22 @@ void EnemyMob::Update(float p_delta)
 	if (m_behaviourTreeTickTime <= 0) {
 		Sense();
 		ClearPath();
+		if(!m_hasTargetAgent&&m_targetTile==m_curTile)
+		{
+		
+			m_targetTile = m_world->GetRandomTile();
+		}
+		
 		FindPath(m_targetTile);
+		//m_curTile->SetBlocked(false);
 		MoveToNextTile();
+		//m_curTile->SetBlocked(true);
 		m_sensingAreaCollider.x = m_curTile->GetWorldPos().x - m_visionRange * static_cast<int>(Config::TILE_SIZE);
 		m_sensingAreaCollider.y = m_curTile->GetWorldPos().y - m_visionRange * static_cast<int>(Config::TILE_SIZE);
 		m_collider.x = m_curTile->GetWorldPos().x - static_cast<int>(Config::HALF_TILE) / 2;
 		m_collider.y = m_curTile->GetWorldPos().y - static_cast<int>(Config::HALF_TILE) / 2;
 		m_behaviourTreeTickTime = 1.f;
+	
 	}
 	
 }
@@ -55,7 +65,7 @@ void EnemyMob::Draw()
 {
 	m_drawManager->Draw(m_sprite, m_curTile->GetWorldPos().x, m_curTile->GetWorldPos().y, 1);
 	//m_drawManager->DrawRect(m_sensingAreaCollider, 255, 0, 0, 0);
-//m_drawManager->DrawRect(m_collider, 255, 0, 0, 0);
+m_drawManager->DrawRect(m_collider, 255, 0, 0, 0);
 //	m_pathFinding->Draw();
 //	m_drawManager->DrawRect(*m_targetTile->GetRect(), 0, 255, 255,0);
 }
@@ -91,6 +101,7 @@ void EnemyMob::Sense()
 		direction.y = (sensedAgentPositions[index].y - m_curTile->GetGridPos().y) / std::max(std::abs(sensedAgentPositions[index].y - m_curTile->GetGridPos().y), 1);
 
 		m_targetTile = m_world->GetTile(sensedAgentPositions[index] - direction);
+		m_hasTargetAgent = true;
 	}
 	sensedAgentPositions.clear();
 }

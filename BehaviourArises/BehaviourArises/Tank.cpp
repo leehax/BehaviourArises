@@ -40,9 +40,9 @@ Tank::Tank(IGridMap* p_world, Tile* p_tile, std::shared_ptr<BlackBoard> p_BB)
 	m_name = "Tank";
 	m_collider = { m_curTile->GetWorldPos().x, m_curTile->GetWorldPos().y, m_sprite->GetClip().w, m_sprite->GetClip().h };
 	m_sensingAreaCollider = { m_curTile->GetWorldPos().x - m_visionRange * static_cast<int>(Config::TILE_SIZE), m_curTile->GetWorldPos().y - m_visionRange * static_cast<int>(Config::TILE_SIZE) , (m_visionRange * 2 + 1) * static_cast<int>(Config::TILE_SIZE), (m_visionRange * 2 + 1) * static_cast<int>(Config::TILE_SIZE) };
+	m_randomTarget = std::make_shared<Vector2<int>>(m_world->GetRandomPosition());
+
 }
-
-
 Tank::~Tank()
 {
 }
@@ -56,17 +56,17 @@ void Tank::CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent)
 	//look for escape
 
 	m_blackBoard->SetVector2i( m_name + "Position", m_curTile->GetGridPos());
-	m_blackBoard->SetVector2i("EscapePosition", Vector2<int>(20,20));
+	m_blackBoard->SetVector2i("RandomPosition", m_world->GetRandomPosition());
 	m_blackBoard->SetInt(m_name + "Health", 100);
 
 	m_behaviourTree = std::make_unique<BehaviourTree>(m_blackBoard);
 
-	auto lookForEscape = std::make_shared<BT_Sequencer>();
-	auto setEscapeAsTarget = std::make_shared<BT_SetDestination>(m_blackBoard, m_blackBoard->GetVector2i("EscapePosition"));
+	auto roamRandomly = std::make_shared<BT_Sequencer>();
+	auto setRandomDestination = std::make_shared<BT_SetDestination>(m_blackBoard, m_randomTarget);
 	auto findPath = std::make_shared<BT_FindPath>(m_blackBoard);
 	auto moveTowards = std::make_shared<BT_Move>(m_blackBoard);
 
-	lookForEscape->AddNodesAsChildren({ setEscapeAsTarget,findPath,moveTowards });
+	roamRandomly->AddNodesAsChildren({ setRandomDestination,findPath,moveTowards });
 
 	auto waitForHealing = std::make_shared<BT_Sequencer>();
 	auto defend = std::make_shared<BT_Defend>(m_blackBoard);
@@ -75,13 +75,17 @@ void Tank::CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent)
 	waitForHealing->AddNodesAsChildren({ needHealing,defend });
 
 	auto helpHealer = std::make_shared<BT_Sequencer>();
-	auto inRangeToAttack = std::make_shared < BT_AmIInRange> (m_blackBoard, 1);
-	auto attackInverter = std::make_shared<BT_Inverter>();
+	auto isHealerUnderAttack = std::make_shared<BT_AllyUnderAttack>(m_blackBoard, "Healer");
+	auto setTargetAgentToEnemyAttackingHealer = std::make_shared<BT_SetTargetAgent>(m_blackBoard, "EnemyAttackingHealer");
 	auto attackMoveSelector = std::make_shared<BT_Selector>();
 	auto moveToAttack = std::make_shared<BT_Sequencer>();
-	auto isHealerUnderAttack = std::make_shared<BT_AllyUnderAttack>(m_blackBoard,"Healer");
-	auto setTargetAgentToEnemyAttackingHealer = std::make_shared<BT_SetTargetAgent>(m_blackBoard, "EnemyAttackingHealer");
 	auto attack = std::make_shared<BT_Attack>(m_blackBoard);
+	auto inRangeToAttack = std::make_shared < BT_AmIInRange> (m_blackBoard, 0, "EnemyAttackingHealerPosition");
+	auto attackInverter = std::make_shared<BT_Inverter>();
+
+	
+
+
 
 	auto selfDefense = std::make_shared<BT_Sequencer>();
 	auto amIUnderAttack = std::make_shared<BT_AllyUnderAttack>(m_blackBoard, "Tank");
@@ -91,6 +95,7 @@ void Tank::CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent)
 	attackInverter->SetChild(inRangeToAttack);
 	moveToAttack->AddNodesAsChildren({ attackInverter,findPath,moveTowards });
 	attackMoveSelector->AddNodesAsChildren({ moveToAttack,attack });
+
 	helpHealer->AddNodesAsChildren({ isHealerUnderAttack,setTargetAgentToEnemyAttackingHealer,attackMoveSelector });
 
 	selfDefense->AddNodesAsChildren({ amIUnderAttack,setTargetAgentToEnemyAttackingMe,attackMoveSelector });
@@ -110,7 +115,7 @@ void Tank::CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent)
 
 
 	auto root = std::make_shared<BT_Selector>();
-	root->AddNodesAsChildren({selfDefense, helpHealer,waitForHealing, lookForEscape });
+	root->AddNodesAsChildren({selfDefense, helpHealer , waitForHealing, roamRandomly });
 
 	m_behaviourTree->Init(root, p_sharedPtrToThisAgent);
 
@@ -124,10 +129,8 @@ void Tank::Update(float p_delta)
 	m_behaviourTreeTickTime -= p_delta;
 	if (m_behaviourTreeTickTime <= 0) {
 
-		m_blackBoard->SetInt(m_name+"Health", m_blackBoard->GetInt(m_name + "Health") - 5);
 		m_blackBoard->SetVector2i(m_name + "Position", m_curTile->GetGridPos());
-		std::vector<BT_Node*> boo; //TODO: fix this, creating an empty vector because too lazy to refactor the behavior tree class
-		m_behaviourTree->Update(boo);
+		m_behaviourTree->Update();
 	
 		m_sensingAreaCollider.x = m_curTile->GetWorldPos().x - m_visionRange * static_cast<int>(Config::TILE_SIZE);
 		m_sensingAreaCollider.y = m_curTile->GetWorldPos().y - m_visionRange * static_cast<int>(Config::TILE_SIZE);
@@ -141,6 +144,10 @@ void Tank::Update(float p_delta)
 	{
 		m_iFrame -= p_delta;
 	}
+	if(GetGridPos() == *m_randomTarget)
+	{
+		*m_randomTarget = m_world->GetRandomPosition();
+	}
 }
 
 void Tank::Draw()
@@ -148,7 +155,10 @@ void Tank::Draw()
 	m_drawManager->Draw(m_sprite, m_curTile->GetWorldPos().x, m_curTile->GetWorldPos().y, 1);
 	//m_pathFinding->Draw();
 	//m_drawManager->DrawRect(m_sensingAreaCollider, 255, 0, 0, 0);
-	//m_drawManager->DrawRect(m_collider, 0, 0, 255, 0);
+	m_drawManager->DrawRect(m_collider, 0, 0, 255, 0);
+
+	//draw a healthB... healthLine
+	m_drawManager->DrawLine(GetWorldPos().x, GetWorldPos().y, GetWorldPos().x + m_blackBoard->GetInt(m_name + "Health")/3, GetWorldPos().y, 0, 255, 0, 255);
 }
 
 void Tank::Sense()
@@ -160,6 +170,7 @@ void Tank::OnCollision(std::weak_ptr<Agent> p_other)
 	auto sptr = p_other.lock();
 	if (sptr->GetName() == "Bat" && m_iFrame <= 0)
 	{
+		m_blackBoard->SetInt(m_name + "Health", m_blackBoard->GetInt(m_name + "Health") - 5);
 		m_blackBoard->SetBool(m_name + "UnderAttack", true);
 		m_blackBoard->SetAgent("EnemyAttacking" + m_name, sptr);
 		m_blackBoard->SetVector2i("EnemyAttacking" + m_name + "Position", sptr->GetGridPos());
@@ -177,5 +188,5 @@ void Tank::Attack(std::weak_ptr<Agent> p_target)
 	
 	auto sptr=p_target.lock();
 	if(sptr)
-		sptr->SetHealth(0);
+		sptr->ChangeHealth(-50.f);
 }

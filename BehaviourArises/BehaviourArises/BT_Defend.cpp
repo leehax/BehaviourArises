@@ -11,7 +11,7 @@ BT_Defend::~BT_Defend()
 {
 }
 
-BT_Node::BT_State BT_Defend::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_Defend::Update()
 {
 	std::cout << "Defending, damage reduction set to 100 \n";
 	return BT_State::Success;

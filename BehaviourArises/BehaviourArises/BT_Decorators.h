@@ -22,7 +22,7 @@ class BT_Inverter: //inverts child return, fail > success and vice versa. If chi
 	public BT_Decorator
 {
 public:
-	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
+	BT_State Update() override;
 };
 
 class BT_Repeater: //repeats child, returns the childs state
@@ -30,7 +30,7 @@ class BT_Repeater: //repeats child, returns the childs state
 {
 public:
 	BT_Repeater(unsigned int p_repeatLimit = 0); //default repeats infinetly
-	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
+	BT_State Update() override;
 
 private:
 	unsigned int m_repeatLimit = 0;
@@ -40,7 +40,7 @@ class BT_RepeaterFail: //repeats until child fails, returns success
 		public BT_Decorator
 {
 public: 
-	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
+	BT_State Update() override;
 
 };
 
@@ -48,20 +48,20 @@ class BT_RepeaterSuccess: //repeats until child succeeds, returns success
 	public BT_Decorator
 {
 public:
-	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
+	BT_State Update() override;
 };
 
 class BT_Succeeder: //always returns success
 	public BT_Decorator
 {
 public:
-	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
+	BT_State Update() override;
 };
 
 class BT_Failer:  //poor guy, always failing no matter what
 	public BT_Decorator
 {
 public:
-	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
+	BT_State Update() override;
 };
 

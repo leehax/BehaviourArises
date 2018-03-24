@@ -2,8 +2,9 @@
 #include "BT_AllyNeedsHealing.h"
 #include "Agent.h"
 
-BT_AllyNeedsHealing::BT_AllyNeedsHealing(std::shared_ptr<BlackBoard> p_BB) :BT_Leaf(p_BB)
+BT_AllyNeedsHealing::BT_AllyNeedsHealing(std::shared_ptr<BlackBoard> p_BB, const std::string p_allyName) :BT_Leaf(p_BB)
 {
+	m_allyName = p_allyName;
 }
 
 
@@ -11,22 +12,14 @@ BT_AllyNeedsHealing::~BT_AllyNeedsHealing()
 {
 }
 
-BT_Node::BT_State BT_AllyNeedsHealing::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_AllyNeedsHealing::Update()
 {
-	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
-	{
-		//we are already in the opennodes;
-	}
-	else
-	{
-		p_openNodes.push_back(this);
-	}
 
-	if(m_blackBoard->GetInt("TankHealth")<=50)
+
+	if(m_blackBoard->GetInt(m_allyName+"Health")<=50)
 	{
-		std::cout << "Tank Needs Healing\n";
-		//m_blackBoard->SetVector2i(m_agent->GetName()+"TargetLocation", m_blackBoard->GetVector2i("TankPosition"));
-		m_blackBoard->SetVector2i(m_agent->GetName() + "TargetActionPosition", m_blackBoard->GetVector2i("TankPosition"));
+		std::cout << m_allyName+" Needs Healing\n";
+		
 		return BT_State::Success;
 	}
 	return BT_State::Failure;

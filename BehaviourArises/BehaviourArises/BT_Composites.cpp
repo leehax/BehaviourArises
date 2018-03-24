@@ -28,7 +28,7 @@ bool BT_Composite::HasChildren() const
 
 void BT_Composite::Init(std::shared_ptr<Agent> p_agent, std::shared_ptr<BlackBoard> p_pBB)
 {
-	std::cout << "Setting agent\n";
+
 	m_agent = p_agent;
 	m_privateBlackBoard = p_pBB;
 	for (auto child : m_childNodes)
@@ -38,25 +38,18 @@ void BT_Composite::Init(std::shared_ptr<Agent> p_agent, std::shared_ptr<BlackBoa
 }
 
 
-BT_Node::BT_State BT_Selector::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_Selector::Update()
 {
 	if(!HasChildren())
 	{
 		return BT_State::Success;
 	}
 
-	if(std::find(p_openNodes.begin(),p_openNodes.end(),this)!=p_openNodes.end())
-	{
-	//we are already in the opennodes;
-	}
-	else
-	{
-		p_openNodes.push_back(this);
-	}
+	
 	
 	for(auto c:m_childNodes)
 	{
-		const auto state = c->Update(p_openNodes);
+		const auto state = c->Update();
 
 		if(state != BT_State::Failure) 
 		{
@@ -69,25 +62,18 @@ BT_Node::BT_State BT_Selector::Update(std::vector<BT_Node*>& p_openNodes)
 }
 
 
-BT_Node::BT_State BT_SelectorMemorize::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_SelectorMemorize::Update()
 {
 	if (!HasChildren())
 	{
 		return BT_State::Success;
 	}
 
-	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
-	{
-		//we are already in the opennodes;
-	}
-	else
-	{
-		p_openNodes.push_back(this);
-	}
+
 
 	for (int i = m_index; i < m_childNodes.size(); i++)
 	{
-		const auto state = m_childNodes[i]->Update(p_openNodes);
+		const auto state = m_childNodes[i]->Update();
 
 		if (state != BT_State::Failure)
 		{
@@ -111,25 +97,17 @@ void BT_SelectorMemorize::Terminate()
 }
 
 
-BT_Node::BT_State BT_Sequencer::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_Sequencer::Update()
 {
 	if (!HasChildren())
 	{
 		return BT_State::Success;
 	}
 
-	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
-	{
-		//we are already in the opennodes;
-	}
-	else
-	{
-		p_openNodes.push_back(this);
-	}
 
 	for (int i = 0; i < m_childNodes.size(); i++)
 	{
-		const auto state = m_childNodes[i]->Update(p_openNodes);
+		const auto state = m_childNodes[i]->Update();
 
 		if (state != BT_State::Success)
 		{
@@ -143,24 +121,16 @@ BT_Node::BT_State BT_Sequencer::Update(std::vector<BT_Node*>& p_openNodes)
 
 
 
-BT_Node::BT_State BT_SequencerMemorize::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_SequencerMemorize::Update()
 {
 	if(!HasChildren())
 	{
 		return BT_State::Success;
 	}
-	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
-	{
-		//we are already in the opennodes;
-	}
-	else
-	{
-		p_openNodes.push_back(this);
-	}
 
 	for (int i = m_index; i < m_childNodes.size(); i++)
 	{
-		const auto state = m_childNodes[i]->Update(p_openNodes);
+		const auto state = m_childNodes[i]->Update();
 
 		if (state != BT_State::Success)
 		{

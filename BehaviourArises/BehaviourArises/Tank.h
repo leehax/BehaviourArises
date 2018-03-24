@@ -14,5 +14,7 @@ public:
 	void OnCollision(std::weak_ptr<Agent> p_other) override;
 	void NotColliding(std::weak_ptr<Agent> p_other) override;
 	void Attack(std::weak_ptr<Agent> p_target) override;
+private:
+	std::shared_ptr<Vector2<int>> m_randomTarget;
 };
 

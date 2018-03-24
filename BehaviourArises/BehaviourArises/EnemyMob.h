@@ -1,5 +1,6 @@
 #pragma once
 #include "Agent.h"
+
 class EnemyMob :
 	public Agent
 {
@@ -16,5 +17,6 @@ public:
 	void Attack(std::weak_ptr<Agent> p_target) override;
 private:
 	Tile * m_targetTile;
+	bool m_hasTargetAgent = false;
 };
 

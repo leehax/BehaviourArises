@@ -8,7 +8,7 @@ public:
 	BT_Leaf(std::string p_name, int p_probablity);
 	BT_Leaf(std::shared_ptr<BlackBoard> p_BB);
 	virtual ~BT_Leaf();
-	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
+	BT_State Update() override;
 
 protected:
 	std::shared_ptr<BlackBoard> m_blackBoard;

@@ -107,3 +107,9 @@ void Agent::SetHealth(float p_val)
 	m_currentHealth = p_val;
 }
 
+void Agent::ChangeHealth(float p_val)
+{
+	m_currentHealth += p_val;
+}
+
+

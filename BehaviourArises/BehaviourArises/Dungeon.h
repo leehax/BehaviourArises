@@ -5,33 +5,9 @@
 #include "Healer.h"
 #include "Tank.h"
 #include "EnemyMob.h"
+#include "Ranger.h"
 
 
-namespace
-{
-	//modern c++ randomization
-
-	std::random_device rd;
-	std::mt19937 mt(rd());
-
-	int RandomInt(const int p_maxExclusive)
-	{
-		const std::uniform_int_distribution<> dist(0, p_maxExclusive - 1);
-		return dist(mt);
-	}
-
-	int RandomInt(const int p_min, const int p_max)
-	{
-		const std::uniform_int_distribution<> dist(0, p_max - p_min);
-		return dist(mt) + p_min;
-	}
-
-	bool RandomBool(const double probablity = 0.5)
-	{
-		const std::bernoulli_distribution dist(probablity);
-		return dist(mt);
-	}
-}
 struct Rect
 {
 	int m_x, m_y;
@@ -52,6 +28,8 @@ public:
 	void HandleEvent(SDL_Event& p_ev, SDL_Point p_pos) override;
 	bool CheckCollisions(std::weak_ptr<Agent> p_first, std::weak_ptr<Agent> p_second);
 	bool CheckSensingCollisions(std::weak_ptr<Agent> p_first, std::weak_ptr<Agent> p_second);
+	std::weak_ptr<EnemyMob> ClosestEnemy(Vector2<int> p_curPos);
+	void SpawnEnemy();
 //	bool EntityOnTile(Tile* p_tile);
 	//Tile* GetTileWithEntity(const std::string p_type);
 		
@@ -73,7 +51,12 @@ private:
 	std::vector<Rect> m_exits;
 	std::shared_ptr<Healer> m_healer;
 	std::shared_ptr<Tank> m_tank;
+	std::shared_ptr<Ranger> m_ranger;
 	std::shared_ptr<BlackBoard> m_worldBlackBoard;
 	std::vector<std::shared_ptr<EnemyMob>> m_enemies;
+
+	std::vector<Tile*> m_enemySpawnPositions;
+	float m_enemySpawnTimer = 3.f;
+	int m_maxEnemies = 10;
 };
 

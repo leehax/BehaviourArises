@@ -4,8 +4,10 @@ class BT_AllyNeedsHealing :
 	public BT_Leaf
 {
 public:
-	BT_AllyNeedsHealing(std::shared_ptr<BlackBoard> p_BB);
+	BT_AllyNeedsHealing(std::shared_ptr<BlackBoard> p_BB, const std::string p_allyName);
 	~BT_AllyNeedsHealing();
-	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
+	BT_State Update() override;
+private:
+	std::string m_allyName;
 };
 

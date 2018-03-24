@@ -6,6 +6,6 @@ class BT_FindPath :
 public:
 	BT_FindPath(std::shared_ptr<BlackBoard> p_BB);
 	~BT_FindPath();
-	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
+	BT_State Update() override;
 };
 

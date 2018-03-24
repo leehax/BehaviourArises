@@ -12,7 +12,7 @@ BT_SetTargetAgent::~BT_SetTargetAgent()
 {
 }
 
-BT_Node::BT_State BT_SetTargetAgent::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_SetTargetAgent::Update()
 {
 	m_blackBoard->SetVector2i(m_agent->GetName() + "TargetPosition", m_blackBoard->GetVector2i(m_agentName+"Position"));
 	m_blackBoard->SetAgent(m_agent->GetName() + "TargetAgent", m_blackBoard->GetAgent(m_agentName));

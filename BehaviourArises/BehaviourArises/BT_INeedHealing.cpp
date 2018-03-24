@@ -11,7 +11,7 @@ BT_INeedHealing::~BT_INeedHealing()
 {
 }
 
-BT_Node::BT_State BT_INeedHealing::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_INeedHealing::Update()
 {
 	if(m_blackBoard->GetInt(m_agent->GetName()+"Health")<=50)
 	{

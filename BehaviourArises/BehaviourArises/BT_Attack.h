@@ -6,6 +6,6 @@ class BT_Attack :
 public:
 	BT_Attack(std::shared_ptr<BlackBoard> p_BB);
 	~BT_Attack();
-	BT_State Update(std::vector<BT_Node*>& p_openNodes) override;
+	BT_State Update() override;
 };
 

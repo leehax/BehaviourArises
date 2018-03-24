@@ -11,19 +11,11 @@ BT_Move::~BT_Move()
 {
 }
 
-BT_Node::BT_State BT_Move::Update(std::vector<BT_Node*>& p_openNodes)
+BT_Node::BT_State BT_Move::Update()
 {
-	if (std::find(p_openNodes.begin(), p_openNodes.end(), this) != p_openNodes.end())
-	{
-		//we are already in the opennodes;
-	}
-	else
-	{
-		p_openNodes.push_back(this);
-	}
+	
 
-	if (m_agent->GetCurrentTile()->GetGridPos() != m_blackBoard->GetVector2i(m_agent->GetName()+"TargetPosition")) {
-		m_agent->MoveToNextTile();
+	if (m_agent->MoveToNextTile()){
 		std::cout << "MoveTo Running, target: " << m_blackBoard->GetVector2i(m_agent->GetName() + "TargetPosition").x << m_blackBoard->GetVector2i(m_agent->GetName() + "TargetPosition").y << '\n';
 		return BT_State::Running;
 		

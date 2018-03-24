@@ -164,6 +164,7 @@
     <ClInclude Include="BT_FindPath.h" />
     <ClInclude Include="BT_Heal.h" />
     <ClInclude Include="BT_INeedHealing.h" />
+    <ClInclude Include="BT_IsEnemyNear.h" />
     <ClInclude Include="BT_Leaf.h" />
     <ClInclude Include="BT_Move.h" />
     <ClInclude Include="BT_MoveAway.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="BT_FindPath.cpp" />
     <ClCompile Include="BT_Heal.cpp" />
     <ClCompile Include="BT_INeedHealing.cpp" />
+    <ClCompile Include="BT_IsEnemyNear.cpp" />
     <ClCompile Include="BT_Leaf.cpp" />
     <ClCompile Include="BT_Move.cpp" />
     <ClCompile Include="BT_MoveAway.cpp" />
