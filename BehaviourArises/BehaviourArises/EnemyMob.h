@@ -12,9 +12,7 @@ public:
 	void Update(float p_delta) override;
 	void Draw() override;
 	void Sense() override;
-	void OnCollision(std::weak_ptr<Agent> p_other) override;
-	void NotColliding(std::weak_ptr<Agent> p_other) override;
-	void Attack(std::weak_ptr<Agent> p_target) override;
+	void OnCollision(std::weak_ptr<Agent> p_other) override {}
 private:
 	Tile * m_targetTile;
 	bool m_hasTargetAgent = false;

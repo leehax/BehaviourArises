@@ -51,3 +51,16 @@ public:
 private:
 	int m_index = 0;
 };
+
+class BT_Parallel:
+	public BT_Composite
+{
+public: 
+	BT_Parallel(int p_minSuccess, int p_minFail) :m_minSuccess(p_minSuccess), m_minFail(p_minFail) {};
+	BT_State Update() override;
+
+private:
+	int m_minSuccess;
+	int m_minFail;
+
+};

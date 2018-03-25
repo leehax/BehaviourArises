@@ -18,8 +18,6 @@ BT_Node::BT_State BT_AllyNeedsHealing::Update()
 
 	if(m_blackBoard->GetInt(m_allyName+"Health")<=50)
 	{
-		std::cout << m_allyName+" Needs Healing\n";
-		
 		return BT_State::Success;
 	}
 	return BT_State::Failure;

@@ -14,9 +14,7 @@ public:
 	void CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent) override;
 	void Update(float p_delta) override;
 	void Draw() override;
-	void Sense() override;
 	void OnCollision(std::weak_ptr<Agent> p_other) override;
-	void NotColliding(std::weak_ptr<Agent> p_other) override;
-	void Attack(std::weak_ptr<Agent> p_target) override;
+
 };
 

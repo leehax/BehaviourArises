@@ -62,9 +62,9 @@ void Engine::Run()
 		m_drawManager->Clear();
 		CalculateDelta();
 		HandleEvents();
-		m_world->DrawGrid(0, 0, 0, 255);
-		m_world->Update(m_delta);
 		
+		m_world->Update(m_delta);
+		m_world->DrawGrid(0, 0, 0, 255);
 		m_drawManager->Present();
 	}
 }

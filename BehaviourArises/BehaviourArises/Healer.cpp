@@ -20,20 +20,9 @@
 #include "BT_Heal.h"
 #include "BT_AmIInRange.h"
 #include "BT_AllyUnderAttack.h"
-#include "BT_MoveAway.h"
+#include "BT_MoveToSafety.h"
 #include "BT_SetTargetAgent.h"
 #include "BT_IsEnemyNear.h"
-// MoveTo(Agent*, "targetIdentifier")
-/*
-   Run()
-{
-agent.position = calculateddirection * agent.bb.agentspeed;
-}
-
-new FindTarget(varioustypes, "woundedAlly"));
-new calpath()
-new MoveTo(&healer, "woundedAlly")
- */
 
 
 
@@ -66,17 +55,14 @@ Healer::~Healer()
 
 void Healer::CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent)
 {
-	//healer should have the following behaviors
-	//heal ally
-	//flee
-	//follow the leader
+
 	m_behaviourTree = std::make_unique<BehaviourTree>(m_blackBoard);
 	
 	
 	auto flee = std::make_shared<BT_Sequencer>();
 
 	auto isEnemyNear = std::make_shared<BT_IsEnemyNear>(m_blackBoard, 2);
-	auto findFleeDirection = std::make_shared<BT_MoveAway>(m_blackBoard, m_blackBoard->GetVector2i(m_name+"SpottedEnemyPosition"));
+	auto findFleeDirection = std::make_shared<BT_MoveToSafety>(m_blackBoard, m_name+"SpottedEnemyPosition");
 	auto moveTowards = std::make_shared<BT_Move>(m_blackBoard);
 	
 
@@ -114,23 +100,23 @@ void Healer::CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent)
 	amISafe->SetChild(isEnemyNear);
 	healSelf->AddNodesAsChildren({ amIWounded,amISafe,healS });
 
-	auto healRanger = std::make_shared<BT_Sequencer>();
-	auto isRangerWounded = std::make_shared<BT_AllyNeedsHealing>(m_blackBoard, "Ranger");
-	auto healRangerIfInRange = std::make_shared<BT_Selector>();
-	auto moveToHealRanger = std::make_shared<BT_Sequencer>();
-	auto rangeToRangerInverter = std::make_shared<BT_Inverter>();
-	auto setTargetToRanger = std::make_shared<BT_SetTargetAgent>(m_blackBoard, "Ranger");
-	auto inRangeToHealRanger = std::make_shared<BT_AmIInRange>(m_blackBoard, 2, "RangerPosition");
-	auto healR = std::make_shared<BT_Heal>(m_blackBoard, "Ranger");
+	auto healMage = std::make_shared<BT_Sequencer>();
+	auto isMageWounded = std::make_shared<BT_AllyNeedsHealing>(m_blackBoard, "Mage");
+	auto healMageIfInRange = std::make_shared<BT_Selector>();
+	auto moveToHealMage = std::make_shared<BT_Sequencer>();
+	auto rangeToMageInverter = std::make_shared<BT_Inverter>();
+	auto setTargetToMage = std::make_shared<BT_SetTargetAgent>(m_blackBoard, "Mage");
+	auto inRangeToHealMage = std::make_shared<BT_AmIInRange>(m_blackBoard, 2, "MagePosition");
+	auto healM = std::make_shared<BT_Heal>(m_blackBoard, "Mage");
 	auto root = std::make_shared<BT_Selector>();
 
-	rangeToRangerInverter->SetChild(inRangeToHealRanger);
-	moveToHealRanger->AddNodesAsChildren({ rangeToRangerInverter,setTargetToRanger,findPath,moveTowards });
-	healRangerIfInRange->AddNodesAsChildren({ moveToHealRanger,healR });
+	rangeToMageInverter->SetChild(inRangeToHealMage);
+	moveToHealMage->AddNodesAsChildren({ rangeToMageInverter,setTargetToMage,findPath,moveTowards });
+	healMageIfInRange->AddNodesAsChildren({ moveToHealMage,healM });
 
-	healRanger->AddNodesAsChildren({ isRangerWounded, healRangerIfInRange });
+	healMage->AddNodesAsChildren({ isMageWounded, healMageIfInRange });
 
-	root->AddNodesAsChildren({ healTank, healSelf, flee, healRanger, followTheLeader });
+	root->AddNodesAsChildren({ healTank, healSelf, flee, healMage, followTheLeader });
 
 	m_behaviourTree->Init(root, p_sharedPtrToThisAgent);
 
@@ -167,15 +153,10 @@ void Healer::Update(float p_delta)
 void Healer::Draw()
 {
 	m_drawManager->Draw(m_sprite, m_curTile->GetWorldPos().x, m_curTile->GetWorldPos().y ,1);
-	//m_pathFinding->Draw();
-	//m_drawManager->DrawRect(m_sensingAreaCollider, 255, 0, 0, 0);
-	m_drawManager->DrawRect(m_collider, 0,0,255, 0);
+
 	m_drawManager->DrawLine(GetWorldPos().x, GetWorldPos().y, GetWorldPos().x + m_blackBoard->GetInt(m_name + "Health") / 3, GetWorldPos().y, 0, 255, 0, 255);
 }
 
-void Healer::Sense()
-{
-}
 
 void Healer::OnCollision(std::weak_ptr<Agent> p_other)
 {
@@ -191,18 +172,6 @@ void Healer::OnCollision(std::weak_ptr<Agent> p_other)
 	}
 }
 
-void Healer::NotColliding(std::weak_ptr<Agent> p_other)
-{
-	auto sptr = p_other.lock();
-	if (sptr->GetName() == "Bat" )
-	{
-		m_blackBoard->SetBool(m_name + "UnderAttack", false);
-		
-	}
-}
 
-void Healer::Attack(std::weak_ptr<Agent> p_target)
-{
-}
 
 

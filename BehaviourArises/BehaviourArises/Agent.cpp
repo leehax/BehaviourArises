@@ -112,4 +112,9 @@ void Agent::ChangeHealth(float p_val)
 	m_currentHealth += p_val;
 }
 
+void Agent::DestroyBehaviorTree()
+{
+	m_behaviourTree.reset();
+}
+
 

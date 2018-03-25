@@ -19,10 +19,10 @@ BT_Node::BT_State BT_AmIInRange::Update()
 {
 	if (Manhattan(m_blackBoard->GetVector2i(m_agent->GetName() + "Position"), m_blackBoard->GetVector2i(m_positionToCheck)) <= m_rangeToCheck)
 	{
-		std::cout << m_agent->GetName()+" We are in range\n";
+	
 		return BT_State::Success;
 	}
-	std::cout << m_agent->GetName() + " NOT in range\n";
+
 	return BT_State::Failure;
 }
 

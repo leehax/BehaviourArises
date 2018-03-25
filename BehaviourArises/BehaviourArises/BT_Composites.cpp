@@ -157,3 +157,34 @@ void BT_SequencerMemorize::Terminate()
 	std::cout << "Terminated a sequencermemorize at: " << this << '\n';
 	m_index = 0;
 }
+
+BT_Node::BT_State BT_Parallel::Update()
+{
+	int successes = 0;
+	int failures = 0;
+	for (int i = 0; i < m_childNodes.size(); i++)
+	{
+		const auto state = m_childNodes[i]->Update();
+
+		if (state == BT_State::Success)
+		{
+			successes++;
+		}
+		if(state==BT_State::Failure)
+		{
+			failures++;
+		}
+
+	}
+
+	if(successes>=m_minSuccess)
+	{
+		return BT_State::Success;
+	}
+	if(failures>=m_minFail)
+	{
+		return BT_State::Failure;
+	}
+
+	return BT_State::Running;
+}

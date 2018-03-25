@@ -1,6 +1,5 @@
 #pragma once
 #include "BT_Node.h"
-//Would it be better to include all of my behaviour tree classes in a single header file, with inline functions?
 class BT_Decorator 
 	:public BT_Node
 {

@@ -22,7 +22,7 @@ public:
 	Agent();
 	~Agent();
 
-	virtual void Sense() = 0;
+	virtual void Sense(){}
 	virtual float GetHealth();
 	virtual void AdjustHealth(float p_amount);
 	virtual void CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent){}
@@ -33,15 +33,15 @@ public:
 	virtual bool MoveToNextTile();
 	virtual std::string GetName();
 	virtual void OnCollision(std::weak_ptr<Agent> p_other) = 0;
-	virtual void NotColliding(std::weak_ptr<Agent> p_other) = 0;
 	virtual void OnAgentEnteredSenseArea(std::weak_ptr<Agent> p_other);
 	virtual SDL_Rect GetCollider(){	return m_collider;	}
 	virtual SDL_Rect GetSensingAreaCollider(){	return m_sensingAreaCollider;	}
-	virtual void Attack(std::weak_ptr<Agent> p_target) = 0;
+	virtual void Attack(std::weak_ptr<Agent> p_target) {}
 	virtual void SetHealth(float p_val);
 	virtual void ChangeHealth(float p_val);
 	virtual IGridMap* GetWorld() { return m_world; };
 	virtual int GetVisionRange() { return m_visionRange; }
+	virtual void DestroyBehaviorTree();
 protected:
 	std::shared_ptr<BlackBoard> m_blackBoard;
 	std::unique_ptr<BehaviourTree> m_behaviourTree = nullptr;

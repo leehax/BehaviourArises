@@ -14,9 +14,9 @@ BT_SetDestination::~BT_SetDestination()
 
 BT_Node::BT_State BT_SetDestination::Update()
 {
-	
-
-	m_blackBoard->SetVector2i(m_agent->GetName()+"TargetPosition", *m_positionToSet);
-	std::cout << "SetDestination Success\n";
-	return BT_State::Success;
+	if (m_positionToSet) {
+		m_blackBoard->SetVector2i(m_agent->GetName() + "TargetPosition", *m_positionToSet);
+		return BT_State::Success;
+	}
+	return BT_State::Failure;
 }

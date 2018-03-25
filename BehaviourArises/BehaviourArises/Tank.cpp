@@ -13,12 +13,12 @@
 #include "BT_Move.h"
 #include "BT_Composites.h"
 #include "BT_Attack.h"
-#include "BT_Defend.h"
-#include "BT_INeedHealing.h"
 #include "BT_AllyUnderAttack.h"
 #include "BT_AmIInRange.h"
 #include "BT_Decorators.h"
 #include "BT_SetTargetAgent.h"
+#include "BT_IsEnemyNear.h"
+#include "BT_AllyNeedsHealing.h"
 
 Tank::Tank(IGridMap* p_world, Tile* p_tile, std::shared_ptr<BlackBoard> p_BB)
 {
@@ -49,12 +49,6 @@ Tank::~Tank()
 
 void Tank::CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent)
 {
-	//the tank should have the following behaviors, he is the leader of the party
-	//block
-	//taunt
-	//fight
-	//look for escape
-
 	m_blackBoard->SetVector2i( m_name + "Position", m_curTile->GetGridPos());
 	m_blackBoard->SetVector2i("RandomPosition", m_world->GetRandomPosition());
 	m_blackBoard->SetInt(m_name + "Health", 100);
@@ -68,54 +62,56 @@ void Tank::CreateBehaviourTree(std::shared_ptr<Agent> p_sharedPtrToThisAgent)
 
 	roamRandomly->AddNodesAsChildren({ setRandomDestination,findPath,moveTowards });
 
-	auto waitForHealing = std::make_shared<BT_Sequencer>();
-	auto defend = std::make_shared<BT_Defend>(m_blackBoard);
-	auto needHealing = std::make_shared<BT_INeedHealing>(m_blackBoard);
 
-	waitForHealing->AddNodesAsChildren({ needHealing,defend });
 
 	auto helpHealer = std::make_shared<BT_Sequencer>();
+	auto moveToHealer = std::make_shared<BT_Sequencer>();
 	auto isHealerUnderAttack = std::make_shared<BT_AllyUnderAttack>(m_blackBoard, "Healer");
-	auto setTargetAgentToEnemyAttackingHealer = std::make_shared<BT_SetTargetAgent>(m_blackBoard, "EnemyAttackingHealer");
+	auto setTargetToHealer = std::make_shared<BT_SetTargetAgent>(m_blackBoard, "Healer");
+
+	moveToHealer->AddNodesAsChildren({ setTargetToHealer, findPath, moveTowards });
+
+	auto lookForHealing = std::make_shared<BT_Sequencer>();
+	auto needHealing = std::make_shared<BT_AllyNeedsHealing>(m_blackBoard, m_name);
+
+	lookForHealing->AddNodesAsChildren({ needHealing,moveToHealer });
+
+	auto attackEnemy = std::make_shared<BT_Sequencer>();
+	auto enemySpotted = std::make_shared<BT_IsEnemyNear>(m_blackBoard, m_visionRange);
+	auto setTargetToAttack = std::make_shared<BT_SetTargetAgent>(m_blackBoard, m_name + "SpottedEnemy");
+	auto attack = std::make_shared<BT_Attack>(m_blackBoard);
+
 	auto attackMoveSelector = std::make_shared<BT_Selector>();
 	auto moveToAttack = std::make_shared<BT_Sequencer>();
-	auto attack = std::make_shared<BT_Attack>(m_blackBoard);
-	auto inRangeToAttack = std::make_shared < BT_AmIInRange> (m_blackBoard, 0, "EnemyAttackingHealerPosition");
+	auto inRangeToAttack = std::make_shared < BT_AmIInRange> (m_blackBoard, 0, m_name + "SpottedEnemyPosition");
 	auto attackInverter = std::make_shared<BT_Inverter>();
-
-	
-
-
-
-	auto selfDefense = std::make_shared<BT_Sequencer>();
-	auto amIUnderAttack = std::make_shared<BT_AllyUnderAttack>(m_blackBoard, "Tank");
-	auto setTargetAgentToEnemyAttackingMe = std::make_shared<BT_SetTargetAgent>(m_blackBoard, "EnemyAttackingTank");
-
 
 	attackInverter->SetChild(inRangeToAttack);
 	moveToAttack->AddNodesAsChildren({ attackInverter,findPath,moveTowards });
 	attackMoveSelector->AddNodesAsChildren({ moveToAttack,attack });
 
-	helpHealer->AddNodesAsChildren({ isHealerUnderAttack,setTargetAgentToEnemyAttackingHealer,attackMoveSelector });
+	attackEnemy->AddNodesAsChildren({ enemySpotted, setTargetToAttack, attackMoveSelector });
 
-	selfDefense->AddNodesAsChildren({ amIUnderAttack,setTargetAgentToEnemyAttackingMe,attackMoveSelector });
-	//Help ally if they are attacked sequence
-	//Is ally under attack?
-	//Is it one or many enemies?
+	helpHealer->AddNodesAsChildren({ isHealerUnderAttack,moveToHealer,attackEnemy });
+	
+	auto helpMage = std::make_shared<BT_Sequencer>();
+	auto moveToMage = std::make_shared<BT_Sequencer>();
+	auto isMageUnderAttack = std::make_shared<BT_AllyUnderAttack>(m_blackBoard, "Mage");
+	auto setTargetToMage = std::make_shared<BT_SetTargetAgent>(m_blackBoard, "Mage");
 
-	//One enemy
-	//Move to that enemy
-	//Kill it
+	moveToMage->AddNodesAsChildren({ setTargetToMage,findPath,moveTowards });
 
-	//Many enemies, taunt enemies (aura of 3x3) (taunt optional if time)
-	//Armor up
+	helpMage->AddNodesAsChildren({ isMageUnderAttack,moveToMage,attackEnemy });
+
+	auto selfDefense = std::make_shared<BT_Sequencer>();
+	auto enemyInMeleeRange = std::make_shared<BT_IsEnemyNear>(m_blackBoard, 1);
 
 
-
+	selfDefense->AddNodesAsChildren({ enemyInMeleeRange,setTargetToAttack,attackMoveSelector });
 
 
 	auto root = std::make_shared<BT_Selector>();
-	root->AddNodesAsChildren({selfDefense, helpHealer , waitForHealing, roamRandomly });
+	root->AddNodesAsChildren({selfDefense, helpHealer , helpMage ,lookForHealing, roamRandomly });
 
 	m_behaviourTree->Init(root, p_sharedPtrToThisAgent);
 
@@ -153,17 +149,12 @@ void Tank::Update(float p_delta)
 void Tank::Draw()
 {
 	m_drawManager->Draw(m_sprite, m_curTile->GetWorldPos().x, m_curTile->GetWorldPos().y, 1);
-	//m_pathFinding->Draw();
-	//m_drawManager->DrawRect(m_sensingAreaCollider, 255, 0, 0, 0);
-	m_drawManager->DrawRect(m_collider, 0, 0, 255, 0);
 
 	//draw a healthB... healthLine
 	m_drawManager->DrawLine(GetWorldPos().x, GetWorldPos().y, GetWorldPos().x + m_blackBoard->GetInt(m_name + "Health")/3, GetWorldPos().y, 0, 255, 0, 255);
 }
 
-void Tank::Sense()
-{
-}
+
 
 void Tank::OnCollision(std::weak_ptr<Agent> p_other)
 {
@@ -177,10 +168,6 @@ void Tank::OnCollision(std::weak_ptr<Agent> p_other)
 		std::cout << "Collided with bat\n";
 		m_iFrame = 1.0f;
 	}
-}
-
-void Tank::NotColliding(std::weak_ptr<Agent> p_other)
-{
 }
 
 void Tank::Attack(std::weak_ptr<Agent> p_target)

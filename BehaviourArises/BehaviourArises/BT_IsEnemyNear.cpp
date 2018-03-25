@@ -21,13 +21,10 @@ BT_Node::BT_State BT_IsEnemyNear::Update()
 	if (enemy) {
 		if (Manhattan(m_agent->GetGridPos(), enemy->GetGridPos()) <= m_range)
 		{
-
-			std::cout << m_agent->GetName() + " Enemy Is Near\n";
 			m_blackBoard->SetAgent(m_agent->GetName() + "SpottedEnemy", enemy);
 			m_blackBoard->SetVector2i(m_agent->GetName() + "SpottedEnemyPosition", enemy->GetGridPos());
 			return BT_State::Success;
 		}
 	}
-//	m_blackBoard->SetAgent(m_agent->GetName() + "SpottedEnemy", std::weak_ptr<EnemyMob>());
 	return BT_State::Failure;
 }

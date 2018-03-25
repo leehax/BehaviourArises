@@ -26,7 +26,6 @@ JPSPath::~JPSPath()
 {
 	for (auto m:m_nodes)
 	{
-		//m.second->m_tile = nullptr;
 		delete m.second;
 		m.second = nullptr;
 	}

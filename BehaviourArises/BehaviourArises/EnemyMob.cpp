@@ -24,7 +24,7 @@ EnemyMob::EnemyMob(IGridMap* p_world, Tile* p_tile)
 	m_world = p_world;
 	m_pathFinding = std::make_shared<AStarPath>(m_world);
 	m_name = "Bat";
-	m_collider = { m_curTile->GetWorldPos().x - static_cast<int>(Config::HALF_TILE)/2 , m_curTile->GetWorldPos().y- static_cast<int>(Config::HALF_TILE)/2, m_sprite->GetClip().w + static_cast<int>(Config::HALF_TILE), m_sprite->GetClip().h + static_cast<int>(Config::HALF_TILE) }; //set the collider slightly bigger than a tile to make it easier to trigger
+	m_collider = { m_curTile->GetWorldPos().x, m_curTile->GetWorldPos().y, m_sprite->GetClip().w , m_sprite->GetClip().h };
 	m_sensingAreaCollider = { m_curTile->GetWorldPos().x - m_visionRange * static_cast<int>(Config::TILE_SIZE), m_curTile->GetWorldPos().y - m_visionRange * static_cast<int>(Config::TILE_SIZE) , (m_visionRange * 2 + 1) * static_cast<int>(Config::TILE_SIZE), (m_visionRange * 2 + 1) * static_cast<int>(Config::TILE_SIZE) };
 	m_targetTile = m_curTile;
 }
@@ -48,13 +48,11 @@ void EnemyMob::Update(float p_delta)
 		}
 		
 		FindPath(m_targetTile);
-		//m_curTile->SetBlocked(false);
 		MoveToNextTile();
-		//m_curTile->SetBlocked(true);
 		m_sensingAreaCollider.x = m_curTile->GetWorldPos().x - m_visionRange * static_cast<int>(Config::TILE_SIZE);
 		m_sensingAreaCollider.y = m_curTile->GetWorldPos().y - m_visionRange * static_cast<int>(Config::TILE_SIZE);
-		m_collider.x = m_curTile->GetWorldPos().x - static_cast<int>(Config::HALF_TILE) / 2;
-		m_collider.y = m_curTile->GetWorldPos().y - static_cast<int>(Config::HALF_TILE) / 2;
+		m_collider.x = m_curTile->GetWorldPos().x;
+		m_collider.y = m_curTile->GetWorldPos().y;
 		m_behaviourTreeTickTime = 1.f;
 	
 	}
@@ -64,10 +62,7 @@ void EnemyMob::Update(float p_delta)
 void EnemyMob::Draw()
 {
 	m_drawManager->Draw(m_sprite, m_curTile->GetWorldPos().x, m_curTile->GetWorldPos().y, 1);
-	//m_drawManager->DrawRect(m_sensingAreaCollider, 255, 0, 0, 0);
-m_drawManager->DrawRect(m_collider, 255, 0, 0, 0);
-//	m_pathFinding->Draw();
-//	m_drawManager->DrawRect(*m_targetTile->GetRect(), 0, 255, 255,0);
+	m_drawManager->DrawLine(GetWorldPos().x, GetWorldPos().y + Config::TILE_SIZE-1, GetWorldPos().x + m_currentHealth / 3, GetWorldPos().y + Config::TILE_SIZE-1, 255,0, 0, 255);
 }
 
 void EnemyMob::Sense()
@@ -77,17 +72,18 @@ void EnemyMob::Sense()
 		for (auto a : m_sensedAgents)
 		{
 			auto sptr = a.lock();
-			if (sptr->GetName() != "Bat")
-			{
-				sensedAgentPositions.push_back(sptr->GetCurrentTile()->GetGridPos());
-				
+			if(sptr){
+				if (sptr->GetName() != "Bat")
+				{
+					sensedAgentPositions.push_back(sptr->GetCurrentTile()->GetGridPos());
 
+				}
 			}
 		}
 	}
 	int maxDistance = INT_MAX;
 	int index = -1;
-	for (int i = 0; i < sensedAgentPositions.size(); i++)
+	for (int i = 0; i < sensedAgentPositions.size(); i++) //get closest agent
 	{
 		if (Manhattan(m_curTile->GetGridPos(), sensedAgentPositions[i])<=maxDistance)
 		{
@@ -96,24 +92,10 @@ void EnemyMob::Sense()
 		}
 	}
 	if (index >= 0) {
-		Vector2<int> direction; //normalize the x and y component individually, instead of normalizing the entire vector, to ensure proper movement
-		direction.x = (sensedAgentPositions[index].x - m_curTile->GetGridPos().x) / std::max(std::abs(sensedAgentPositions[index].x - m_curTile->GetGridPos().x), 1);
-		direction.y = (sensedAgentPositions[index].y - m_curTile->GetGridPos().y) / std::max(std::abs(sensedAgentPositions[index].y - m_curTile->GetGridPos().y), 1);
 
-		m_targetTile = m_world->GetTile(sensedAgentPositions[index] - direction);
-		m_hasTargetAgent = true;
+		m_targetTile = m_world->GetTile(sensedAgentPositions[index]);
+		m_hasTargetAgent = true; 
 	}
 	sensedAgentPositions.clear();
 }
 
-void EnemyMob::OnCollision(std::weak_ptr<Agent> p_other)
-{
-}
-
-void EnemyMob::NotColliding(std::weak_ptr<Agent> p_other)
-{
-}
-
-void EnemyMob::Attack(std::weak_ptr<Agent> p_target)
-{
-}
